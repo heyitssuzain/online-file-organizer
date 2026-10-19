@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help &amp; Guide — how to use AuraFlow Web</title>
+  <meta name="description" content="Step-by-step guide for AuraFlow Web: selecting folders, reviewing the plan, resolving errors, understanding browser permissions, organized ZIP downloads and undo. Plus browser requirements." />
+  <link rel="canonical" href="__BASE_URL__/guide.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="How to use AuraFlow Web — the complete guide" />
+  <meta property="og:description" content="Select folders, review plans, handle errors and understand browser permissions — the complete guide." />
+  <meta property="og:url" content="__BASE_URL__/guide.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container container-narrow" style="max-width: 800px">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="./index.html">Home</a></li>
+          <li aria-current="page">Help &amp; Guide</li>
+        </ol>
+      </nav>
+
+      <header class="section-head">
+        <span class="eyebrow">Help &amp; guide</span>
+        <h1 style="font-size: var(--fs-2xl)">Using AuraFlow Web, step by step</h1>
+        <p class="text-muted">Five minutes from messy to tidy. If anything goes wrong, the troubleshooting section at the bottom covers every known failure mode.</p>
+      </header>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3 id="step-1">1. Choose what to organize</h3>
+        <p class="text-muted">On the <a href="./organizer.html">Organizer</a> page you have three ways to select files:</p>
+        <ul class="text-muted" style="padding-left: 1.1rem">
+          <li><strong>Select folder</strong> — opens your browser's folder picker. In Chrome/Edge, this grants read access and enables real sorting later. Elsewhere it uses the classic picker.</li>
+          <li><strong>Select files</strong> — pick individual files with Ctrl/Cmd-click multi-select. Ideal for small jobs.</li>
+          <li><strong>Drag &amp; drop</strong> — drop files anywhere on the drop panel; in Chromium you can drop whole folders too.</li>
+        </ul>
+        <p class="text-muted text-sm">The selection is capped at 5,000 files. If you need to organize more, run it in two passes — large batches rarely improve the result, they just slow the page.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3 id="step-2">2. Review the plan</h3>
+        <p class="text-muted">Every file appears with its category, size, and proposed destination. Switch the rule at the top of the plan:</p>
+        <ul class="text-muted" style="padding-left: 1.1rem">
+          <li><strong>By type</strong> — <code>Images/photo.jpg</code>. The classic.</li>
+          <li><strong>By extension</strong> — <code>Videos/mp4/clip.mp4</code>. Great for huge mixed dumps.</li>
+          <li><strong>By date</strong> — <code>2025-04/Images/photo.jpg</code>. Groups by last-modified month.</li>
+        </ul>
+        <p class="text-muted">Watch for three signals: a <em>renamed</em> badge (the plan found a name conflict and renamed the new copy — nothing overwrites), the <em>skipped</em> notes (temp/system files stay in place), and the file count badges up top.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3 id="step-3">3. Duplicates (optional)</h3>
+        <p class="text-muted">Click <em>Find duplicates</em>. Files are compared by size first, then by streaming SHA-256 hash — so a genuine duplicate is identical <em>content</em>, found even under different names. AuraFlow flags groups; it never deletes automatically. Move or delete with your own file manager, then re-run the organizer.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3 id="step-4">4. Execute — two honest modes</h3>
+        <p class="text-muted"><strong>Sort into a real folder</strong> (Chrome, Edge, Opera, Brave): after <em>Organize</em>, your browser asks again for the destination folder and <strong>read &amp; write</strong> permission. Confirm once, watch the progress, and the files are moved into category folders. <em>Undo this run</em> restores everything for as long as the tab stays open.</p>
+        <p class="text-muted"><strong>Organized ZIP download</strong> (Firefox, Safari, mobile browsers): the browser cannot write folders, so AuraFlow produces a single ZIP mirroring the plan's structure — drop its contents into any folder on your device. You download it; you decide where it lives.</p>
+        <p class="text-muted text-sm">Either way, download the manifest (JSON/CSV/TXT) at the end. It lists every move — an audit record and a recipe to undo manually anytime.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3 id="getting-errors">5. Troubleshooting — every known error, decoded</h3>
+        <div class="table-wrap"><table class="results-table" style="width:100%">
+          <thead><tr><th scope="col" style="text-align:left; padding:6px 10px 6px 0">What you see</th><th scope="col" style="text-align:left">What it means &amp; the fix</th></tr></thead>
+          <tbody style="color:var(--text-muted)">
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">“Selection capped at the first 5,000 files”</td><td>You picked a very large tree. Organize in batches — the limit keeps the page fast.</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Move error, “permission denied”</td><td>The file may be open in another program, or the folder lost write permission. Close the app holding it (media players love to do this), then run again. Everything else in the run still organized.</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">A file fails with “already exists”</td><td>Something was created between the plan and the run. The manifest shows exactly which file; rerun the organizer — the plan will propose a fresh non-conflicting name.</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">“…over 512 MB couldn't be hashed”</td><td>The file skipped duplicate-hashing (browser cap). It still organizes normally.</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">ZIP exceeds 2 GB</td><td>The selection is too large for one archive in your browser's memory limits. Organize fewer files per run, or switch to Chrome/Edge for direct folder sorting.</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Undo button missing</td><td>Undo needs the same tab session that did the organizing (Chromium). Use the manifest files to reverse manually.</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Nothing organized / empty plan</td><td>All files were skipped (temp/system) or you selected a folder whose contents are all in subfolders beyond the 3-level scan depth.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-6)">
+        <h3 id="browsers">6. Supported browsers, plainly</h3>
+        <ul class="text-muted text-sm" style="padding-left: 1.1rem; margin-bottom: 0">
+          <li><strong>Chrome 86+, Edge 86+, Opera, Brave</strong> — full experience: folder reading, direct sorting, undo.</li>
+          <li><strong>Firefox, Safari 14+</strong> — file reading, planning, duplicates, manifest exports and the organized ZIP. No direct folder writes (browser limitation, not a paywall!).</li>
+          <li><strong>Mobile browsers</strong> — selection (files or photos), planning and ZIP download work; folder writing does not.</li>
+        </ul>
+      </section>
+
+      <div class="grid grid-2">
+        <a class="card" href="./organizer.html" style="text-decoration:none">
+          <h3>Open the Organizer →</h3>
+          <p class="text-muted">Try it now — nothing to install, nothing to sign up for.</p>
+        </a>
+        <a class="card" href="/guides/" style="text-decoration:none">
+          <h3>Deeper guides →</h3>
+          <p class="text-muted">Downloads-folder cleanup, photo organization, duplicate identification and more.</p>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to identify duplicate files safely — AuraFlow Web guide</title>
+  <meta name="description" content="True duplicates share content, not names. How size pre-filtering plus SHA-256 hashing finds real copies safely — and why name-only tools flood you with false positives." />
+  <link rel="canonical" href="__BASE_URL__/guides/how-to-identify-duplicate-files.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="How to identify duplicate files" />
+  <meta property="og:description" content="Content, not names: the right way to find true duplicate files." />
+  <meta property="og:url" content="__BASE_URL__/guides/how-to-identify-duplicate-files.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to identify duplicate files safely",
+    "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "datePublished": "2026-10-19",
+    "mainEntityOfPage": "__BASE_URL__/guides/how-to-identify-duplicate-files.html"
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li aria-current="page">Duplicate files</li>
+        </ol>
+      </nav>
+
+      <article class="article">
+        <h1>How to identify duplicate files — safely</h1>
+        <span class="date">Updated October 2026 · 5 min read</span>
+
+        <p class="lede">Two files with the same name are usually not duplicates; two files with different names very often are. If that sentence does not immediately make sense, do not run a deduplication tool yet — a wrong dedupe deletes a file you wanted. Here's the thinking, and a safe procedure.</p>
+
+        <h2>Why names are worthless signals</h2>
+        <p>Files collect name-duplicates in a healthy workflow: <code>invoice.pdf</code> exists in <code>2026/</code> <em>and</em> <code>archive/</code> with different contents (a paid version, a draft version, a template). Meanwhile, true duplicates — the exact same bytes saved twice — wear totally different names: <code>IMG_2047.jpg</code> vs. <code>Copy of IMG_2047.jpg</code> vs. <code>IMG_2047 (1).jpg</code>. Only one of these pairs can be called a duplicate, and its names differ.</p>
+
+        <h2>The correct algorithm, and why it's safe</h2>
+        <ol>
+          <li><strong>Group by exact size.</strong> Computing a hash of every file is wasteful — different sizes can never be duplicates. Size is free metadata, so it's the cheap first filter. In practice 90%+ of a typical library is eliminated here.</li>
+          <li><strong>Hash candidates byte-for-byte.</strong> Same size doesn't mean same content, so the remaining candidates are hashed — the standard approach is SHA-256 over the full bytes. A cryptographic hash's collision odds are so astronomically small that, for this purpose, equal hash = equal content.</li>
+          <li><strong>Stream, don't load.</strong> A 4 GB video should not hit RAM. Reading in chunks (4 MB slices) with an incremental hash keeps memory flat regardless of file size — this is how a browser app can hash multi-hundred-MB videos without freezing.</li>
+        </ol>
+        <p>This is exactly what AuraFlow implements: sizes first, SHA-256 only where sizes meet, streamed in a background worker. It's also why it shows a progress count instead of pretending hashing a 300-folder library is instant.</p>
+
+        <h2>A safe procedure after groups are found</h2>
+        <ol>
+          <li><strong>Look before you leap.</strong> Open each duplicate group and decide which copy lives. Spa rules of thumb: keep the copy with the more sensible name, keep the one <em>not</em> inside a backup folder, and if in doubt, keep both — disk is cheap, regret is not.</li>
+          <li><strong>Delete deliberately, small batches.</strong> A tool that auto-deletes "all but one" removes your say from the decision. Flagged groups are right; automatic interruptions are wrong.</li>
+          <li><strong>Recount, then rerun the organizer.</strong> Duplicates removed, file counts shrink and the leftover folder sorts cleanly.</li>
+        </ol>
+
+        <div class="tip"><strong>Watch out:</strong> "similar photos" (same scene, different shots) are <em>not</em> duplicates. Content hashing says nothing about visual similarity — and an organizer that claims to dedupe them is making aesthetic decisions on your behalf. Dedupe means byte-identical; everything else needs your judgment.</div>
+
+        <h2>What astronomically big files change</h2>
+        <p>Hashing is linear in file size, so enormous libraries take real time. Two honest boundaries many tools set (AuraFlow included): files beyond a ceiling (512 MB in-browser) are skipped with a note rather than grinding the page, and <em>partial</em> files (<code>.crdownload</code>, <code>.part</code>) are excluded — hashing half a download makes a hash of nothing meaningful.</p>
+
+        <h2>Where desktop and web editions differ</h2>
+        <p>The desktop AuraFlow hashes with the speed of native code; the web edition is within a factor of a few for realistic libraries and imposes practical caps. Both share the essential design: content-based, size-prefiltered, never name-based, never auto-deleting. If you fight a centuries-old archive of 20 GB in a browser tab regularly, use the desktop app for dedup and the web edition for organizing.</p>
+
+        <div class="article-cta">
+          <p><strong>Try duplicate detection on a folder you suspect is copying itself.</strong></p>
+          <a class="btn btn-primary" href="../organizer.html">Find my duplicates</a>
+        </div>
+
+        <nav class="related" aria-label="Related guides">
+          <a href="/guides/how-to-clean-up-downloads-folder.html"><span>How to clean up a Downloads folder</span><span aria-hidden="true">→</span></a>
+          <a href="/guides/browser-file-organization-limits.html"><span>Browser file organization: capabilities and limits</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# AuraFlow Web — robots.txt
+# Public marketing & tool pages are crawlable; app-side internal states are not indexed
+# because everything renderable is a public page. Organizer page is listed but its content
+# is a tool (noindex asserted via meta tag there).
+
+User-agent: *
+Allow: /
+
+Sitemap: __BASE_URL__/sitemap.xml

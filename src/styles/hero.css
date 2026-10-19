@@ -1,0 +1,204 @@
+/* ==========================================================================
+   AuraFlow Web — hero (CSS 3D, no WebGL needed)
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  padding-block: clamp(3rem, 2rem + 5vw, 6rem) clamp(2rem, 1rem + 3vw, 4rem);
+  overflow: clip;
+}
+
+.hero .container {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: clamp(2rem, 1rem + 4vw, 5rem);
+  align-items: center;
+}
+
+@media (max-width: 1020px) {
+  .hero .container { grid-template-columns: 1fr; }
+}
+
+.hero-copy h1 {
+  font-size: var(--fs-hero);
+  margin-bottom: var(--s-5);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+.hero-kicker {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: var(--s-4);
+}
+.hero-grad {
+  background: linear-gradient(100deg, var(--text) 30%, var(--accent) 62%, var(--accent-violet) 88%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-copy p.lede {
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  max-width: 46ch;
+  margin-bottom: var(--s-6);
+}
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  align-items: center;
+  margin-bottom: var(--s-5);
+}
+.hero-privacy {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.hero-privacy svg { width: 16px; height: 16px; color: var(--success); flex-shrink: 0; }
+
+/* 3D stage --------------------------------------------------------------- */
+.hero-stage {
+  position: relative;
+  min-height: clamp(360px, 30vw, 500px);
+  perspective: 1100px;
+  user-select: none;
+  touch-action: pan-y;
+}
+
+/* Flying cards/folders exceed the stage on narrow viewports — clip instead
+   of causing horizontal page scroll (cards align inside during flight). */
+@media (max-width: 560px) {
+  .hero-stage { overflow: clip; }
+}
+
+.hero-tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 500ms var(--ease-out);
+  will-change: transform;
+}
+
+.hero-grid-glow {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(ellipse 60% 50% at 55% 45%, rgba(79, 124, 255, 0.16), transparent 70%);
+  z-index: 0;
+}
+
+/* File cards floating in space */
+.hf {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 13px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.03));
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  transform-style: preserve-3d;
+  transition: transform 900ms var(--ease-out), opacity 700ms ease, filter 700ms ease;
+  will-change: transform;
+  z-index: 2;
+}
+@media (prefers-color-scheme: light), (data-theme='light') {
+  .hf { background: rgba(255, 255, 255, 0.66); }
+}
+.hf-ico {
+  width: 20px;
+  height: 24px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+}
+.hf small {
+  display: block;
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 10px;
+}
+/* folded corner paper look */
+.hf-ico::after { content: ''; position: absolute; inset: 0; border-radius: 4px; box-shadow: inset -3px -3px 0 rgba(0,0,0,0.22); }
+
+/* Category folders */
+.hfd {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 3;
+  transition: transform 900ms var(--ease-out), opacity 700ms ease;
+  will-change: transform;
+}
+.hfd-folder {
+  width: 74px;
+  height: 56px;
+  color: var(--cat, var(--accent));
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.4));
+  transition: transform 300ms var(--ease-out);
+}
+.hfd label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.hfd:hover .hfd-folder { transform: translateY(-4px) scale(1.04); }
+
+/* scattered (chaos) state transforms defined inline by JS;
+   organized state = deterministic grid slot */
+.hero-stage.organized .hf { pointer-events: none; }
+
+/* Ring "sorting" halo */
+.halo {
+  position: absolute;
+  inset: 6% 4%;
+  border-radius: 50%;
+  border: 1px dashed rgba(79, 124, 255, 0.25);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 600ms ease;
+  z-index: 1;
+}
+.hero-stage.sorting .halo { opacity: 1; animation: halo-spin 14s linear infinite; }
+@keyframes halo-spin { to { transform: rotate(360deg) scale(1.02); } }
+
+/* Organize button inside stage */
+.hero-stage .stage-cta {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: inline-flex;
+  gap: var(--s-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-stage .hf, .hero-stage .hfd { transition: none !important; }
+  .hero-stage.sorting .halo { animation: none; }
+  .hero-tilt { transition: none; }
+}

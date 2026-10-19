@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organize My Files — AuraFlow Web (free online file organizer)</title>
+  <meta name="description" content="Sort your files into clean categories right in your browser. Pick a folder or files, review the full plan, then organize — nothing is uploaded and nothing is moved without your confirmation." />
+  <link rel="canonical" href="__BASE_URL__/organizer.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Organize My Files — AuraFlow Web" />
+  <meta property="og:description" content="Sort messy folders into clean categories in your browser. Preview first, confirm once, undo anytime." />
+  <meta property="og:url" content="__BASE_URL__/organizer.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="app-page">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="./index.html">Home</a></li>
+          <li aria-current="page">Organizer</li>
+        </ol>
+      </nav>
+
+      <header class="app-head">
+        <div>
+          <h1 style="font-size: var(--fs-2xl)">Organize My Files</h1>
+          <p class="text-muted" id="appStep1Text">Pick files or a folder to begin — everything stays on your device.</p>
+        </div>
+        <div class="app-source" role="group" aria-label="Choose files to organize">
+          <button class="btn btn-primary" type="button" id="btnFolder">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            Select folder
+          </button>
+          <button class="btn btn-secondary" type="button" id="btnFiles">
+            Select files
+          </button>
+          <input type="file" id="fileInput" multiple class="sr-only" tabindex="-1" aria-hidden="true" />
+          <input type="file" id="dirInput" webkitdirectory multiple class="sr-only" tabindex="-1" aria-hidden="true" />
+        </div>
+      </header>
+
+      <div class="badge" id="capBadge" style="margin-bottom: var(--s-4)"></div>
+
+      <!-- Drop zone -->
+      <section class="dropzone" id="dropzone" aria-label="Drag and drop area">
+        <div class="dz-inner">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+          <p><strong>Drag &amp; drop</strong> files — or a folder — anywhere on this panel</p>
+          <p class="text-sm text-muted">…or use the buttons above. Large selections are capped at 5,000 files for responsiveness.</p>
+        </div>
+      </section>
+
+      <!-- Live status: what the app just did (aria-live for screen readers) -->
+      <p class="text-sm text-muted" id="appHeadStatus" aria-live="polite" style="margin: 0 0 var(--s-3)">
+        Pick files or a folder to begin — everything stays on your device.
+      </p>
+
+      <!-- Workspace: list + preview -->
+      <section id="workspace" hidden>
+        <div class="app-grid">
+          <!-- column 1: file list + controls -->
+          <aside class="panel" aria-label="Selected files">
+            <div class="panel-head">
+              <h2 style="font-size: var(--fs-lg); margin: 0">Files <span class="badge" id="countBadge">0</span></h2>
+              <button class="btn btn-ghost btn-sm" type="button" id="btnClear">Clear</button>
+            </div>
+            <div id="statsRow" class="stats-row" aria-live="off"></div>
+            <div class="list-wrap" id="fileList" role="list" aria-label="Selected files"></div>
+            <p class="text-xs text-faint" id="listMore" style="padding: var(--s-2) var(--s-4)"></p>
+          </aside>
+
+          <!-- column 2: plan preview -->
+          <section class="panel" aria-label="Organization plan">
+            <div class="panel-head">
+              <h2 style="font-size: var(--fs-lg); margin: 0">Plan preview</h2>
+              <div class="segmented" role="group" aria-label="Organize by" id="ruleSeg">
+                <button type="button" data-rule="type" aria-pressed="true">By type</button>
+                <button type="button" data-rule="extension" aria-pressed="false">By extension</button>
+                <button type="button" data-rule="date" aria-pressed="false">By date</button>
+              </div>
+            </div>
+
+            <div class="opts-row">
+              <label class="switch"><input type="checkbox" id="optTemp" checked /><span>Skip temporary files</span></label>
+              <label class="switch"><input type="checkbox" id="optSystem" checked /><span>Skip system files</span></label>
+              <button class="btn btn-ghost btn-sm" type="button" id="btnDupes" aria-describedby="dupeHint">
+                Find duplicates
+              </button>
+            </div>
+            <p class="text-xs text-faint" id="dupeHint" style="margin-top: calc(-1 * var(--s-2))">Duplicate detection hashes file contents locally (SHA-256, streamed) — never below 1 KB and capped for very large files.</p>
+
+            <div id="dupesOut" hidden aria-live="polite"></div>
+
+            <div id="planOut" aria-live="polite">
+              <div class="empty-mini">
+                <p class="text-muted">Your plan will appear here — every destination shown before anything moves.</p>
+              </div>
+            </div>
+
+            <div class="actions-row" id="actionsRow">
+              <button class="btn btn-ghost btn-sm" type="button" id="btnDownloadPlan">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+                Download plan (JSON)
+              </button>
+              <button class="btn btn-ghost btn-sm" type="button" id="btnDownloadCsv">Plan as CSV</button>
+              <span class="grow"></span>
+              <button class="btn btn-primary" type="button" id="btnExecute" disabled>
+                Organize <span id="btnExecuteN"></span>
+              </button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- Execute modes -->
+      <section id="executePanel" hidden>
+        <div class="card" id="execWrite" hidden>
+          <h3>Ready to sort into your folder</h3>
+          <p class="text-muted" id="execWriteDesc"></p>
+          <button class="btn btn-primary" type="button" id="btnGrantWrite">Choose the folder &amp; grant "read &amp; write"</button>
+          <p class="text-xs text-faint">Your browser will ask for permission. AuraFlow only writes into the folder you explicitly pick.</p>
+        </div>
+        <div class="card" id="execZip" hidden>
+          <h3>Organized download (ZIP)</h3>
+          <p class="text-muted">Your browser doesn't allow direct folder writes, so AuraFlow builds a single ZIP with the plan's folder structure — import it wherever you like. Every planned file is included; nothing on your disk changes.</p>
+          <button class="btn btn-primary" type="button" id="btnZipGo">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+            Build organized ZIP
+          </button>
+        </div>
+
+        <div class="exec-progress" id="execProgress" hidden>
+          <p style="margin-bottom: var(--s-2)"><strong id="execLabel">Working…</strong> <span class="text-muted text-sm" id="execCurrent"></span></p>
+          <div class="progress"><div class="progress-bar" id="execBar"></div></div>
+          <button class="btn btn-danger btn-sm" type="button" id="btnCancel" style="margin-top: var(--s-3)">Cancel</button>
+        </div>
+      </section>
+
+      <!-- Results -->
+      <section id="resultsPanel" hidden aria-labelledby="results-h" style="margin-top: var(--s-5)">
+        <div class="card">
+          <div id="resultsHead"></div>
+          <div class="table-wrap" id="resultsTable"></div>
+          <div class="actions-row" style="margin-top: var(--s-4)">
+            <button class="btn btn-secondary btn-sm" type="button" id="btnUndo">Undo this run</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="btnExportJson">Manifest (JSON)</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="btnExportCsv">Manifest (CSV)</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="btnExportTxt">Report (TXT)</button>
+            <span class="grow"></span>
+            <a class="btn btn-ghost btn-sm" href="./guide.html#getting-errors">See an error? Read this →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Safety note -->
+      <p class="text-xs text-faint" style="margin-top: var(--s-6)">AuraFlow never uploads your files and never runs anything in the background. Organizing only happens while this tab is open, only for files you chose.</p>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <dialog id="confirmDlg" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle" style="font-size: var(--fs-lg)">Confirm organization</h2>
+    <p class="text-muted" id="confirmBody"></p>
+    <div class="actions-row" style="margin-top: var(--s-4)">
+      <button class="btn btn-ghost" type="button" id="confirmNo">Review again</button>
+      <button class="btn btn-primary" type="button" id="confirmYes">Yes — organize</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/pages/organizer.ts"></script>
+</body>
+</html>

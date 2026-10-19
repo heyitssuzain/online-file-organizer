@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy — what happens to your files · AuraFlow Web</title>
+  <meta name="description" content="Exactly what AuraFlow Web does with the files you select: everything is processed locally in your browser, nothing is uploaded, no analytics, no accounts. Read the full technical breakdown." />
+  <link rel="canonical" href="__BASE_URL__/privacy.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="AuraFlow Web Privacy — your files never leave your device" />
+  <meta property="og:description" content="Everything is processed locally in your browser. No uploads, no accounts, no analytics. Read exactly what happens." />
+  <meta property="og:url" content="__BASE_URL__/privacy.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container container-narrow" style="max-width: 760px">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="./index.html">Home</a></li>
+          <li aria-current="page">Privacy</li>
+        </ol>
+      </nav>
+
+      <header class="section-head">
+        <span class="eyebrow">Privacy</span>
+        <h1 style="font-size: var(--fs-2xl)">What actually happens to your files</h1>
+        <p class="text-muted">This page describes the real implementation, not aspirations. Each claim below maps to a specific technical fact about this site.</p>
+      </header>
+
+      <section class="card" style="margin-bottom: var(--s-4); border-color: rgba(52,211,153,0.35)">
+        <h3>1. Files are never uploaded</h3>
+        <p class="text-muted">AuraFlow Web has no backend that could receive files. The organizing logic is JavaScript that ships with the page itself and runs inside your browser tab. Categorization, previews, duplicate hashing and manifest generation all happen on your machine. There is no network request carrying any file data — you can verify this in your browser's dev tools (Network tab) while using the app.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3>2. Access is requested only when you act</h3>
+        <p class="text-muted">The app asks for nothing until you click <em>Select folder</em>, <em>Select files</em>, or drop files onto the panel. When you organize into a real folder (Chromium browsers), your browser shows its own permission prompt and asks for <strong>read &amp; write</strong> access to the exact folder you pick. AuraFlow only writes inside that folder, and only category folders it create for your confirmed plan.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3>3. No hidden analytics or telemetry</h3>
+        <p class="text-muted">This site has no trackers, no analytics scripts, no cookies, no fingerprinting, and no third-party requests beyond this site's own assets. Your preference for light/dark theme is stored in your browser's localStorage — on your device, never transmitted.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3>4. What is (and isn't) stored</h3>
+        <p class="text-muted">
+          <strong>Stored locally,</strong> only in your own browser:
+        </p>
+        <ul class="text-muted text-sm" style="padding-left: 1.1rem; margin-bottom: var(--s-3)">
+          <li>Your light/dark theme choice (localStorage)</li>
+          <li>Organized output you download (goes to your Downloads folder — you control it)</li>
+        </ul>
+        <p class="text-muted"><strong>Not stored anywhere:</strong> the pages' in-memory list of your selected files, plan previews, duplicate hash results, executed run manifests. Close the tab and they are gone.
+        </p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3>5. Duplicate detection only reads file contents</h3>
+        <p class="text-muted">To find true duplicates, the app reads the bytes of same-size files and computes SHA-256 hashes — inside a Web Worker, in your browser, in streamed chunks. The hash is a fingerprint for comparison only; it is never sent anywhere and never written anywhere.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h3>6. Security boundaries you should know about</h3>
+        <p class="text-muted">Files you select are treated as data — never executed. Filenames shown in plans and manifests are HTML-escaped, and store only what you picked. The organized ZIP is built locally with a checksummed archive writer. No AI models, no external services, no "anonymous processing" — because there is nobody to process for.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-6)">
+        <h3>7. Hosted pages (this website itself)</h3>
+        <p class="text-muted">The site is served as static files from GitHub Pages. Standard web server access logs (IP address, dates, requested paths) are covered by GitHub's privacy policy and are not accessible to this project beyond what GitHub shares. AuraFlow does not add any of its own logging.</p>
+      </section>
+
+      <div class="card" style="background: var(--accent-soft); border-color: rgba(79,124,255,0.3)">
+        <h3>The one-line version</h3>
+        <p style="margin-bottom:0">Your files stay on your device. Full stop.</p>
+      </div>
+
+      <p class="text-sm text-muted" style="color: var(--text-faint); margin-top: var(--s-6)" id="contact-note">Questions or a privacy report request? Contact heyitssuzain@gmail.com — it's a real inbox, not a form-theater.</p>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to organize photos and documents differently — AuraFlow Web</title>
+  <meta name="description" content="Photos and documents want different structures: time-first for photos, purpose-first for documents. How to sort both from one folder pass — plus tips for screenshots and scans." />
+  <link rel="canonical" href="__BASE_URL__/guides/how-to-organize-photos-and-documents.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="How to organize photos and documents" />
+  <meta property="og:description" content="Time-first for photos, purpose-first for documents — two logics, one workflow." />
+  <meta property="og:url" content="__BASE_URL__/guides/how-to-organize-photos-and-documents.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to organize photos and documents",
+    "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "datePublished": "2026-10-19",
+    "mainEntityOfPage": "__BASE_URL__/guides/how-to-organize-photos-and-documents.html"
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li aria-current="page">Photos &amp; documents</li>
+        </ol>
+      </nav>
+
+      <article class="article">
+        <h1>How to organize photos and documents (they want different things)</h1>
+        <span class="date">Updated October 2026 · 5 min read</span>
+
+        <p class="lede">A photo collection and a document archive are different beasts wearing the same messy-folder costume. Apply one structure to both and one of them always ends up angry. The trick: <strong>photos are memory → organize by time; documents are utility → organize by purpose.</strong></p>
+
+        <h2>Photos: browse like a timeline</h2>
+        <p> When was the last time you searched a photo by its filename? <code>IMG_4471.jpg</code> code names nothing. People retrieve photos by moment — "Trip month", "the birthday", "that weekend" — so a timeline beats any attempt at topical folders ("Beach", "Food" — someone always has to decide what a curry photo really is).</p>
+        <ul>
+          <li><strong>Sort by month (<code>2025-04/</code>).</strong> A date-organized pass groups everything by last-modified month. Phone and camera files land in the month they were taken; rescans and edits drift forward by a month or two — acceptable friction.</li>
+          <li><strong>Keep the originals rule.</strong> If your sort ends up with <code>Copy of IMG_4471.jpg</code>-type duplicates, that's editing-induced duplication (exported variants, app copies). Run duplicate detection after the first pass — content hashing finds the true copies, filenames none the wiser.</li>
+          <li><strong>Screenshots are a special breed.</strong> No dates you care about, endless iterations. A dedicated <code>Images/Screenshots/</code> pass (extension rule for <code>.png</code> plus a look at names) saves the timeline from being wallpaper-only.</li>
+        </ul>
+
+        <h2>Documents: browse like a task</h2>
+        <p>Documents are not remembered by month; they're remembered by <em>job</em>: the contract, the application, the shipment. Time-based folders hide things here.</p>
+        <ul>
+          <li><strong>Sort by type first</strong> — <code>Documents/</code> splits text and spreadsheets from PDF folders. Fine as the landing structure.</li>
+          <li><strong>Then name with intent.</strong> Files like <code>resume_v3_2026.pdf</code> say more than folder structure ever will. Make the habit stick: <code>[domain]_[document]_[year]</code>. Renaming takes two seconds and pays back every search.</li>
+          <li><strong>Keep a yearly sweep for "flotsam."</strong> Lone PDFs you'd open to identify can stay in the top-level <code>Documents/</code>. A quarterly "do I still need each of these?" pass beats trying to taxonomize everything at once.</li>
+        </ul>
+
+        <div class="tip"><strong>One pass, two structures — is that possible?</strong> Run the organizer by date first (everything into months), then run a second pass <em>by type on each month's <code>Images</code> and <code>Documents</code> children</em> if you want finer structure. Two planned passes beat one unreviewable mega-pass.</div>
+
+        <h2>The folder-exile list</h2>
+        <p>Some things are classified but never feel organized. A shared quarantine folder for odd cases helps: scanned receipts you'll need once, downloads for a single print, rare format files (<code>.heic</code>, proprietary design files). Name it something you'll recognize, e.g. <code>Others</code>. AuraFlow sends unknown extensions there too — never discarded, just weighted.</p>
+
+        <h2>Fast win: the "photo dump from a phone" pattern</h2>
+        <ol>
+          <li>Plug the phone (or drag its camera folder onto the Organizer over to a local folder first).</li>
+          <li>Run by date → month folders appear.</li>
+          <li>Confirm, download the manifest for records, unplug.</li>
+          <li>Lose the guilt about the 4,000 photos in the root directory — they're in a timeline now.</li>
+        </ol>
+
+        <div class="article-cta">
+          <p><strong>Start with a date run on the messiest camera dump you own.</strong></p>
+          <a class="btn btn-primary" href="../organizer.html">Organize my photos</a>
+        </div>
+
+        <nav class="related" aria-label="Related guides">
+          <a href="/guides/how-to-organize-files-by-type.html"><span>How to organize files by type</span><span aria-hidden="true">→</span></a>
+          <a href="/guides/browser-file-organization-limits.html"><span>Browser file organization: capabilities and limits</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

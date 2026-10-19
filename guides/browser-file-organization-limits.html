@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browser file organization: capabilities and limits — AuraFlow Web</title>
+  <meta name="description" content="The honest map of what a web page can do to your files: File API reading, File System Access writes with permission, drag-and-drop, ZIP fallbacks — and what stays impossible in every browser." />
+  <link rel="canonical" href="__BASE_URL__/guides/browser-file-organization-limits.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Browser file organization: capabilities and limits" />
+  <meta property="og:description" content="What web apps can do to your files — and what stays desktop-only." />
+  <meta property="og:url" content="__BASE_URL__/guides/browser-file-organization-limits.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Browser file organization: capabilities and limits",
+    "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "datePublished": "2026-10-19",
+    "mainEntityOfPage": "__BASE_URL__/guides/browser-file-organization-limits.html"
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li aria-current="page">Browser capabilities</li>
+        </ol>
+      </nav>
+
+      <article class="article">
+        <h1>Browser file organization: capabilities and limits, honestly mapped</h1>
+        <span class="date">Updated October 2026 · 6 min read</span>
+
+        <p class="lede">Browsers are security fortresses around your disk, and rightly so. But the fortress has gates — and the honest way to build a web file manager is to know exactly which gates exist. Here is the map, browser-agnostic and vendor-flavored, plus what each limitation means in practice for a user, not just for a developer.</p>
+
+        <h2>What browsers let a web page do (with your consent)</h2>
+        <ul>
+          <li><strong>Read files you pick.</strong> Every modern browser implements the File API. A picker or drag-and-drop grants the page read access to just those files — nothing more, nothing else.</li>
+          <li><strong>Read whole folders.</strong> Directory inputs (and, in Chromium, the directory picker) reveal a folder tree, recursively, with permission. This is how an organizer shows a real preview of hundreds of files it has never seen.</li>
+          <li><strong>Write into a folder you grant.</strong> The File System Access API (Chrome 86+, Edge, Opera, Brave) lets a page create subfolders and move/copy files <em>after</em> your browser shows its own permission prompt. The page cannot expand its reach — it writes into the folder you picked, and nothing beyond it.</li>
+          <li><strong>Compute over contents.</strong> Hashing files to find duplicates, parsing CSVs, etc. — all in-page computation, often in Web Workers, limited only by your device.</li>
+          <li><strong>Deliver output as downloads.</strong> ZIPs, manifests, reports — produced in memory and handed to your Downloads folder, where you decide what happens next.</li>
+        </ul>
+
+        <h2>What no browser lets a web page do — at all</h2>
+        <ul>
+          <li><strong>See a file path.</strong> <code>C:\Users\you\…</code> is invisible to the page; it works with names and handles. Good for privacy, irrelevant for function.</li>
+          <li><strong>Touch files outside the granted scope.</strong> Your Desktop remains untouchable while the page works on a folder in your Downloads. Desktop apps are the opposite.</li>
+          <li><strong>Persist formless access forever.</strong> Permissions are tied to the tab session; a browser <em>may</em> re-prompt later. No "install once, sort forever" background manager.</li>
+          <li><strong>Watch folders silently.</strong> A web page cannot monitor a directory for new files. Auto-organizers that keep a folder tidy continuously are, structurally, native applications. AuraFlow Web doesn't pretend otherwise — this site is a tool you open, use, and close.</li>
+          <li><strong>Run as a service.</strong> No startup items, no daemon. That's the fortress working as intended.</li>
+        </ul>
+
+        <h2>Where browsers disagree with each other</h2>
+        <p>The same product may behave differently depending on your browser, and a truthful tool surfaces the difference instead of hiding it:</p>
+        <ul>
+          <li><strong>Chromium family (Chrome, Edge, Brave, Opera)</strong>: full read/write folder powers. The "sort into your real folder + undo" experience lives here.</li>
+          <li><strong>Firefox, Safari</strong>: excellent reading, planning, hashing and downloads; no folder writes. The organized-ZIP path delivers the same sorting result — you pour the archive out wherever you want.</li>
+          <li><strong>Mobile browsers</strong>: file reading works (Photos pickers, Files app integration), folder permission and writes don't. Phones genuinely prefer one-shot flows: pick, preview, get a ZIP back.</li>
+        </ul>
+        <p>A practical consequence: <strong>capability detection</strong> beats browser sniffing. A good web app asks the platform what it can do and adapts its UI — showing real-folder sorting where available, ZIP fallback elsewhere, and saying why the menu looks different today.</p>
+
+        <h2>Memory: the invisible ceiling</h2>
+        <p>The quietest limit is RAM. A browser tab shares your machine's memory with everything else. An organizer that slurps whole video files into memory will tab-crash just as your sorting finishes — which is why real implementations:</p>
+        <ul>
+          <li>stream big files (hashing in chunks, ZIPs built incrementally);</li>
+          <li>cap selections (thousands of files, not tens of thousands);</li>
+          <li>prefer planning <em>metadata</em> (name, size, type, date) over content — content is only read on demand (hashing, packaging).</li>
+        </ul>
+
+        <h2>So which tool should do the job?</h2>
+        <p>A rule worth internalizing: <strong>the browser is the right tool when a job is occasional, interactive and reviewable; a native app is right when a job is continuous, huge, or habitual.</strong> Organizing last month's Downloads? Browser, no install involved. Keeping a 2 TB media library in order with background watching? Desktop application. AuraFlow exists as both precisely because pretending either half can fully replace the other would be a lie.</p>
+
+        <div class="article-cta">
+          <p><strong>See how your own browser scores</strong> — the Organizer shows its capability badge on load.</p>
+          <a class="btn btn-primary" href="../organizer.html">Check my browser's powers</a>
+        </div>
+
+        <nav class="related" aria-label="Related guides">
+          <a href="/guides/how-to-organize-files-by-type.html"><span>How to organize files by type</span><span aria-hidden="true">→</span></a>
+          <a href="../about.html"><span>About the desktop app vs the web edition</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+/* ==========================================================================
+   AuraFlow Web — design tokens
+   ========================================================================== */
+
+:root {
+  /* Colour — dark charcoal foundation, warm off-white text */
+  --bg: #0d0e12;
+  --bg-elevated: #14161c;
+  --bg-sunken: #0a0b0f;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-strong: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text: #ece9e2;            /* warm off-white */
+  --text-muted: #a7a49c;
+  --text-faint: #6f6d66;
+
+  /* Accents — electric blue, cyan, violet (restrained) */
+  --accent: #4f7cff;
+  --accent-cyan: #38d5e0;
+  --accent-violet: #8b5cf6;
+  --accent-warm: #f59e0b;
+  --danger: #f0645c;
+  --success: #34d399;
+
+  --accent-soft: rgba(79, 124, 255, 0.14);
+  --success-soft: rgba(52, 211, 153, 0.12);
+  --danger-soft: rgba(240, 100, 92, 0.12);
+
+  /* Light theme (respect system preference; toggle available) */
+  --font-sans: "Inter", "Segoe UI Variable Display", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+
+  /* Spacing scale (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  /* Radii — restrained, not bouncy */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 16px 48px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 0 0 1px rgba(79, 124, 255, 0.35), 0 8px 32px rgba(79, 124, 255, 0.12);
+
+  /* Motion */
+  --t-fast: 160ms;
+  --t-med: 280ms;
+  --t-slow: 520ms;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout */
+  --content: 1120px;
+  --nav-h: 64px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: #f6f4ef;             /* warm off-white */
+    --bg-elevated: #ffffff;
+    --bg-sunken: #edeae3;
+    --surface: rgba(20, 22, 28, 0.03);
+    --surface-strong: rgba(20, 22, 28, 0.06);
+    --border: rgba(20, 22, 28, 0.11);
+    --border-strong: rgba(20, 22, 28, 0.22);
+
+    --text: #1c1e26;
+    --text-muted: #55585f;
+    --text-faint: #8a8c92;
+
+    --accent: #3b5bdb;
+    --accent-soft: rgba(59, 91, 219, 0.1);
+    --success-soft: rgba(16, 150, 110, 0.12);
+    --danger-soft: rgba(200, 60, 52, 0.1);
+
+    --shadow-1: 0 1px 2px rgba(28, 30, 38, 0.08), 0 4px 16px rgba(28, 30, 38, 0.06);
+    --shadow-2: 0 2px 6px rgba(28, 30, 38, 0.1), 0 16px 48px rgba(28, 30, 38, 0.12);
+  }
+}
+
+/* Explicit light / dark toggle */
+:root[data-theme='light'] {
+  --bg: #f6f4ef;
+  --bg-elevated: #ffffff;
+  --bg-sunken: #edeae3;
+  --surface: rgba(20, 22, 28, 0.03);
+  --surface-strong: rgba(20, 22, 28, 0.06);
+  --border: rgba(20, 22, 28, 0.11);
+  --border-strong: rgba(20, 22, 28, 0.22);
+  --text: #1c1e26;
+  --text-muted: #55585f;
+  --text-faint: #8a8c92;
+  --accent: #3b5bdb;
+  --accent-soft: rgba(59, 91, 219, 0.1);
+  --shadow-1: 0 1px 2px rgba(28, 30, 38, 0.08), 0 4px 16px rgba(28, 30, 38, 0.06);
+  --shadow-2: 0 2px 6px rgba(28, 30, 38, 0.1), 0 16px 48px rgba(28, 30, 38, 0.12);
+}
+:root[data-theme='dark'] {
+  --bg: #0d0e12;
+  --bg-elevated: #14161c;
+  --surface: rgba(255, 255, 255, 0.035);
+}
+
+/* Typography scale (fluid, mobile-first) */
+:root {
+  --fs-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --fs-sm: clamp(0.8125rem, 0.8rem + 0.1vw, 0.875rem);
+  --fs-md: clamp(0.9375rem, 0.92rem + 0.15vw, 1rem);
+  --fs-lg: clamp(1.05rem, 1rem + 0.3vw, 1.1875rem);
+  --fs-xl: clamp(1.25rem, 1.1rem + 0.7vw, 1.5625rem);
+  --fs-2xl: clamp(1.6rem, 1.3rem + 1.4vw, 2.25rem);
+  --fs-hero: clamp(2.5rem, 1.8rem + 3.6vw, 4.25rem);
+}
+
+/* Category colours (from desktop category_manager.py) */
+:root {
+  --cat-Documents: #3b82f6;
+  --cat-Images: #ec4899;
+  --cat-Videos: #8b5cf6;
+  --cat-Audio: #f59e0b;
+  --cat-Archives: #10b981;
+  --cat-Code: #06b6d4;
+  --cat-Executables: #ef4444;
+  --cat-Design_3D: #f97316;
+  --cat-Fonts: #84cc16;
+  --cat-Data: #6366f1;
+  --cat-Others: #6b7280;
+}

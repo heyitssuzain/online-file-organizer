@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to clean up a Downloads folder (10-minute routine) — AuraFlow Web</title>
+  <meta name="description" content="A practical 10-minute monthly routine to clean a Downloads folder: stage everything, sort by type, park unknown extensions, remove true duplicates — without deleting anything you'll miss." />
+  <link rel="canonical" href="__BASE_URL__/guides/how-to-clean-up-downloads-folder.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="How to clean up a Downloads folder" />
+  <meta property="og:description" content="A 10-minute monthly routine without deleting anything you'll miss." />
+  <meta property="og:url" content="__BASE_URL__/guides/how-to-clean-up-downloads-folder.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to clean up a Downloads folder (10-minute routine)",
+    "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "datePublished": "2026-10-19",
+    "dateModified": "2026-10-19",
+    "mainEntityOfPage": "__BASE_URL__/guides/how-to-clean-up-downloads-folder.html"
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li aria-current="page">Clean up Downloads</li>
+        </ol>
+      </nav>
+
+      <article class="article">
+        <h1>How to clean up a Downloads folder — a 10-minute routine</h1>
+        <span class="date">Updated October 2026 · 6 min read</span>
+
+        <p class="lede">A Downloads folder is pure sediment: whatever the last six months threw at you, unsorted. You do not need discipline. You need a <strong>setting — "everything drains to sorted folders within minutes of landing" — and one honest pass per month</strong> for what automation can't judge. Here's the routine.</p>
+
+        <h2>Mindset: don't delete — park</h2>
+        <p>Downloads folders hurt because people think cleanup means deleting, and deleting means deciding. Reframe: you aren't throwing anything away, you're moving things <em>where they'd be organized if you'd cared about them</em>. Decisions deferred out of the folder, not out of existence.</p>
+
+        <h2>The routine</h2>
+        <ol>
+          <li><strong>Open the Organizer, select your Downloads folder.</strong> Top-level sorting is the goal — avoid drilling into subfolders (you've made those yourself; they're already organized, keep them out of scope).</li>
+          <li><strong>Run the plan preview by type.</strong> Real Downloads folders throw up <code>Documents/</code> with a hundred invoices and PDFs, <code>Images/</code> with screenshots you forgot, <code>Archives/</code> with <code>backup_final_FINAL.zip</code>.</li>
+          <li><strong>skim the Executables and Archives folders first.</strong> Installers and <code>.zip</code>s are the two biggest "safe to ignore" classes — but also the two most likely to hide something you actually wanted. One look before the run beats one regret after.</li>
+          <li><strong>Confirm the run.</strong> In Chrome/Edge the files physically sort into subfolders and you can undo in one click if you flinch. Anywhere else, take the organized ZIP and replace the folder's contents offline.</li>
+          <li><strong>Keep the manifest.</strong> After the run, download the JSON/CSV manifest before closing the tab — that's your "what was moved where" receipt. If it feels anal, remember it took one click.</li>
+        </ol>
+
+        <h2>The wrinkles you should expect</h2>
+        <ul>
+          <li><strong>Partial downloads.</strong> <code>xxx.part</code>, <code>.crdownload</code>, <code>.tmp</code> — a browser mid-download when you ran the organizer. A decent tool skips these (AuraFlow does, by default); a terrible one renames a half-written file and corrupts things. If you see temp files skipped, that's the app behaving.</li>
+          <li><strong>Duplicate installers.</strong> <code>setup_1.exe</code>, <code>setup_2.exe</code> — you re-downloaded the same thing repeatedly. Once sorted, run duplicate detection on the resulting folder: size matches then SHA-256 hashes tell you these are byte-identical, and you can delete with confidence (the tool flags groups; you delete them yourself deliberately).</li>
+          <li><strong>Disk images and ISOs.</strong> These tend to be huge and nostalgic. Sort them into <code>Archives/</code> and judge their fate later when they don't dominate the folder.</li>
+          <li><strong>Files that never move because they never close.</strong> VPN installers currently mounted, PDFs open in a reader. Organizer runs show each failure with its filename; close the program holding the file and rerun it.</li>
+        </ul>
+
+        <div class="tip"><strong>Habit hack:</strong> the routine works because it's boring and bounded — a monthly reminder titled "drain the sediment" is the entire ask. Folders that took 10 minutes stay navigable for another 30.</div>
+
+        <h2>What not to do</h2>
+        <ul>
+          <li><strong>Don't sort with mass-deletion tools "just this once."</strong> A files-by-age cleaner that hits your Downloads folder assumes every old file is dead — but that exact folder is where dormant-but-alive things live (tax PDFs, license keys, that one receipt).</li>
+          <li><strong>Don't let cloud sync processes fight the organizer.</strong> Pause sync before a big sort; a background uploader mid-move is the only realistic way to compound a partial run.</li>
+          <li><strong>Don't trust "AI organize my files" features that upload.</strong> Sorting by extension is a deterministic job — if it needs to phone home with your files, it's solving a problem it doesn't have (or creating one you didn't).</li>
+        </ul>
+
+        <h2>Under what circumstances is a Downloads cleanup "done"?</h2>
+        <p>When a new arrival has an obvious home: you double-click the folder and know which subfolder a PDF is in without browsing. That state survives on type-sorted folders + monthly discipline. The forgettable part of the job (<em>categorize, no decisions</em>) is automated; the occasional part (<em>leave the weird stuff</em>) stays yours.</p>
+
+        <div class="article-cta">
+          <p><strong>Measure your sediment:</strong> run the plan preview on your Downloads folder. If the count stings, that's the whole pitch.</p>
+          <a class="btn btn-primary" href="../organizer.html">Preview my Downloads cleanup</a>
+        </div>
+
+        <nav class="related" aria-label="Related guides">
+          <a href="/guides/how-to-organize-files-by-type.html"><span>How to organize files by type</span><span aria-hidden="true">→</span></a>
+          <a href="/guides/how-to-identify-duplicate-files.html"><span>How to identify duplicate files</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

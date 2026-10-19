@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to organize files by type — AuraFlow Web guide</title>
+  <meta name="description" content="A practical guide to sorting folders by file type: three rules (type, extension, date), when each works, how rename-on-conflict protects you, and a 3-minute workflow with AuraFlow Web." />
+  <link rel="canonical" href="__BASE_URL__/guides/how-to-organize-files-by-type.html" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="How to organize files by type" />
+  <meta property="og:description" content="Three sorting rules, when each works, and how not to overwrite anything in the process." />
+  <meta property="og:url" content="__BASE_URL__/guides/how-to-organize-files-by-type.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How to organize files by type",
+    "description": "Sorting rules for messy folders — type, extension and date — with a safe preview-confirm workflow.",
+    "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "datePublished": "2026-10-19",
+    "mainEntityOfPage": "__BASE_URL__/guides/how-to-organize-files-by-type.html"
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="section">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li aria-current="page">Organize files by type</li>
+        </ol>
+      </nav>
+
+      <article class="article">
+        <h1>How to organize files by type</h1>
+        <span class="date">Updated October 2026 · 5 min read</span>
+
+        <p class="lede">"Organize by type" sounds trivial: pictures over here, documents over there. The interesting part is doing it <strong>without overwriting anything, without mystery files, and without a rule that silently dumps your thesis into "Others"</strong>. Here is the method, and the three questions that decide which rule you should use.</p>
+
+        <nav class="toc" aria-label="On this page">
+          <strong>On this page</strong>
+          <ol>
+            <li><a href="#pick">Pick the right rule for your folder</a></li>
+            <li><a href="#workflow">The preview → confirm → undo workflow</a></li>
+            <li><a href="#conflicts">What happens when two files share a name?</a></li>
+            <li><a href="#faq-mini">Quick answers</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="pick">1. Pick the right rule for your folder</h2>
+        <p>Match the rule to how you'll <em>look for files later</em>, not to how they arrived:</p>
+        <ul>
+          <li><strong>By type</strong> (Images, Documents, Videos…) — the everyday rule. Use it when your folder is a general-purpose landing zone: Downloads, Desktop, an SD card offload. You remember things as "it was a picture", not as "I saved it on April 17 — wait, maybe March".</li>
+          <li><strong>By extension</strong> — inside a type family that splinters wildly. A web scrapes folder where <code>.png</code>, <code>.webp</code>, <code>.avif</code> and <code>.jpg</code> all have different purposes: one folder per extension puts the format with the tool that opens it. AuraFlow nests this as <code>Videos/mp4/</code> so nothing gets lost if you mishandle the rule later.</li>
+          <li><strong>By date</strong> — when time is context. Working folders where each month is a "session" (invoices, screenshots of a project, field recordings). The web can only see each file's <em>last-modified</em> date, so treat it as "when the file last changed" — a strong clue, not a diary.</li>
+        </ul>
+
+        <div class="tip"><strong>Rule of thumb:</strong> if you can imagine asking "when did I do that?", use date. If you can imagine asking "what kind of thing was it?", use type. If it's "which format works with tool X?", use extension.</div>
+
+        <h2 id="workflow">2. The preview → confirm → undo workflow</h2>
+        <ol>
+          <li><strong>Select once, review everything.</strong> Choose the folder — not individual files. The point of a plan preview is to see the full destination map <em>before</em> committing: every file, its category, where it lands. Skim for surprises: that joke <code>.exe</code> you were keeping? It's heading for <code>Executables/</code> and you can veto it there.</li>
+          <li><strong>Watch the conflict badges.</strong> A good organizer resolves collisions <em>in the plan</em>, not after the fact. <code>invoice.pdf</code> meeting an existing <code>invoice.pdf</code> should become <code>invoice_1.pdf</code> while it's still a preview line — never a silent overwrite, never an error ghost halfway through.</li>
+          <li><strong>Confirm into a real folder — or take the ZIP.</strong> Chrom­ium browsers can write into the folder you grant. Firefox/Safari and phones can deliver the same result as a single organized ZIP you import yourself. Both paths produce the same structure; the difference is where the bytes land.</li>
+          <li><strong>Keep the manifest.</strong> Export it (JSON/CSV) even if you never open it. That little file lists every <code>original → destination</code> pair, which means any outcome is explainable — and reversible — with zero memory required.</li>
+        </ol>
+
+        <h2 id="conflicts">3. What happens when two files share a name?</h2>
+        <p>Your Downloads folder is a collision museum: <code>setup.exe</code> downloaded five times. A safe organizer behaves deterministically:</p>
+        <ul>
+          <li>it checks the destination folder's existing contents, not just the file you're moving;</li>
+          <li>the first file keeps its name; the second becomes <code>name_1.ext</code>, the third <code>name_2.ext</code>…;</li>
+          <li>every rename is marked in the preview so "wait, why is there a _1 here?" has an answer before the move happens.</li>
+        </ul>
+        <p>That's exactly the behavior AuraFlow's desktop app implements with <code>safe_move</code>, and the web edition ports the same rule — its rename chain is covered by automated tests so the <code>_17</code> case can't quietly regress.</p>
+
+        <h2 id="faq-mini">4. Quick answers</h2>
+        <ul>
+          <li><strong>Is "by type" safe for system files?</strong> Only if they're excluded. <code>Thumbs.db</code> and <code>desktop.ini</code> should stay where they are — AuraFlow skips both by default.</li>
+          <li><strong>What about files with no extension?</strong> They go to <code>Others</code> — visible, movable, never dropped.</li>
+          <li><strong>Can uppercase extensions mis-sort?</strong> Not if the tool normalizes case. <code>.PDF</code> and <code>.pdf</code> are the same format; an organizer that treats them differently will do something irrational.</li>
+          <li><strong>Should subfolders be flattened?</strong> Cautiously. A depth cap (2–3 levels) keeps you from<span class="text-nowrap"> shredding</span> a project's structure; organize the top level, expand later if needed.</li>
+        </ul>
+
+        <div class="article-cta">
+          <p><strong>Try the workflow on your real mess</strong> — the preview is free, the undo exists, and nothing uploads.</p>
+          <a class="btn btn-primary" href="../organizer.html">Organize My Files</a>
+        </div>
+
+        <nav class="related" aria-label="Related guides">
+          <a href="/guides/how-to-clean-up-downloads-folder.html"><span>How to clean up a Downloads folder</span><span aria-hidden="true">→</span></a>
+          <a href="/guides/how-to-identify-duplicate-files.html"><span>How to identify duplicate files</span><span aria-hidden="true">→</span></a>
+        </nav>
+      </article>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

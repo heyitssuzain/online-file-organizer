@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuraFlow Web — Your Files. Finally Organized. Free online file organizer</title>
+  <meta name="description" content="Organize files by type right in your browser — no uploads, no accounts, no cost. Preview the plan, sort a messy Downloads or Desktop folder into clean category folders in seconds." />
+  <link rel="canonical" href="__BASE_URL__/index.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AuraFlow Web" />
+  <meta property="og:title" content="AuraFlow Web — Your Files. Finally Organized." />
+  <meta property="og:description" content="Free online file organizer. Sort messy folders into clean categories in your browser — files never leave your device." />
+  <meta property="og:url" content="__BASE_URL__/index.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AuraFlow Web — Your Files. Finally Organized." />
+  <meta name="twitter:description" content="Free online file organizer. Sort messy folders into clean categories in your browser — files never leave your device." />
+  <meta name="twitter:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AuraFlow Web",
+    "url": "__BASE_URL__/index.html",
+    "description": "Free browser-based file organizer that sorts files by type, with preview, one-click undo and duplicate detection.",
+    "inLanguage": "en",
+    "publisher": { "@type": "Organization", "name": "AuraFlow" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "AuraFlow Web",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "url": "__BASE_URL__/index.html",
+    "description": "Browser-based file organizer: categorize files by type, extension or date, preview every move, download an organization plan or an organized ZIP.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="hero" aria-labelledby="hero-h">
+      <div class="container">
+        <div class="hero-copy">
+          <span class="hero-kicker">From digital chaos to clarity</span>
+          <h1 id="hero-h"><span class="hero-grad">Your files. Finally organized.</span></h1>
+          <p class="lede">Organize your files, clean up messy folders, and take control of your digital workspace — with a simple, privacy-conscious workflow that runs entirely in your browser.</p>
+          <div class="hero-ctas">
+            <a class="btn btn-primary" href="./organizer.html">Organize My Files</a>
+            <a class="btn btn-secondary" href="./features.html">Explore Features</a>
+          </div>
+          <p class="hero-privacy">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+            Nothing is uploaded. Everything runs on your device.
+          </p>
+        </div>
+        <div class="hero-stage" id="hero3d" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ============ WORKING DEMO ============ -->
+    <section class="section" id="demo" aria-labelledby="demo-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Live demo</span>
+          <h2 id="demo-h">A real organizer, in miniature</h2>
+          <p>This preview runs the exact same categorization engine as the full Organizer — right here, in your browser. Pick a few files and watch the plan build itself.</p>
+        </div>
+        <div class="card reveal" style="padding: var(--s-5)">
+          <div style="display:flex; flex-wrap:wrap; gap: var(--s-3); align-items:center; justify-content: space-between">
+            <div style="display:flex; gap:var(--s-3); flex-wrap:wrap">
+              <button class="btn btn-secondary" type="button" id="demoPick">Choose sample files</button>
+              <input type="file" id="demoInput" multiple class="sr-only" aria-hidden="true" tabindex="-1" />
+            </div>
+            <p class="text-sm text-muted" style="margin:0">Files listed below never leave your device.</p>
+          </div>
+          <div id="demoOut" style="margin-top: var(--s-5)" aria-live="polite">
+            <p class="text-muted text-sm" id="demoEmpty">No files yet — choose a few above and the plan preview will appear here.</p>
+          </div>
+          <div id="demoResult" hidden style="margin-top: var(--s-4)">
+            <button class="btn btn-ghost btn-sm" type="button" id="demoDownload">Download plan (CSV)</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="demoReset">Clear</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CATEGORIES ============ -->
+    <section class="section" aria-labelledby="cats-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Supported categories</span>
+          <h2 id="cats-h">Eleven tidy homes for every file</h2>
+          <p>The category system and extension lists come straight from the proven desktop organizer, so a file never lands somewhere unexpected. Unknown extensions go to <em>Others</em> — nothing is discarded.</p>
+        </div>
+        <div class="grid grid-3" id="cats-grid" style="margin-top: var(--s-5)"></div>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="section" aria-labelledby="how-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">How it works</span>
+          <h2 id="how-h">Three steps. Zero surprises.</h2>
+        </div>
+        <div class="grid grid-3" style="margin-top: var(--s-5)">
+          <div class="card reveal" style="--stagger-i:0">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <h3>1. Choose your files</h3>
+            <p>Pick a folder or drag files in. Files are read locally by your browser — nothing is uploaded anywhere.</p>
+          </div>
+          <div class="card reveal" style="--stagger-i:1">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.7"/></svg></div>
+            <h3>2. Review the plan</h3>
+            <p>Every file is shown with its category and destination. Name conflicts are detected before they happen — nothing is overwritten.</p>
+          </div>
+          <div class="card reveal" style="--stagger-i:2">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
+            <h3>3. Confirm &amp; undo anytime</h3>
+            <p>Sort into a real folder (where your browser allows it) or download an organized ZIP. Every run includes a manifest you can keep — or one-click undo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section class="section" aria-labelledby="feat-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Feature highlights</span>
+          <h2 id="feat-h">Built like a desktop app. Respectful like a browser.</h2>
+        </div>
+        <div class="grid grid-3" style="margin-top: var(--s-5)">
+          <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L9.5 22L19 10h-6.5z"/></svg></div>
+            <h3>Batch processing</h3><p>Thousands of files categorized, sized and conflict-checked in one pass — in a background thread where your browser supports it.</p></div>
+          <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="9" y="3" width="12" height="16" rx="2"/><path d="M15 21H5a2 2 0 0 1-2-2V7"/></svg></div>
+            <h3>Duplicate detection</h3><p>Real content hashing (SHA-256), not name matching. Same name ≠ same file; identical content, even with different names, is found.</p></div>
+          <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
+            <h3>Preview before anything moves</h3><p>Every destination is previewed. Collisions get a safe <code>file_1.ext</code> rename, exactly like the desktop app.</p></div>
+          <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/></svg></div>
+            <h3>Privacy by architecture</h3><p>No servers, no uploads, no analytics. The file processing is your browser's own JavaScript, on your own machine.</p></div>
+          <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg></div>
+            <h3>Exportable manifests</h3><p>Download the full plan or the executed run as JSON, CSV or a readable report — useful for audits and for reversing changes.</p></div>
+          <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+            <h3>Organize by date</h3><p>Group files by month using the dates your browser can reliably see. Great for Downloads folders that grew for years.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PRIVACY / SAFETY ============ -->
+    <section class="section" aria-labelledby="safe-h">
+      <div class="container">
+        <div class="grid grid-2" style="align-items:center">
+          <div class="reveal">
+            <span class="eyebrow">Privacy &amp; safety</span>
+            <h2 id="safe-h" style="font-size: var(--fs-2xl)">Your files stay on your device</h2>
+            <p class="text-muted">AuraFlow Web requests file access only when you choose files, and only in the tab you're using. There is no backend that could ever receive a file, because the organizing logic ships with the page itself.</p>
+            <ul class="text-muted" style="padding-left: 1.2rem; display:grid; gap: 0.4rem">
+              <li>Nothing is uploaded — all categorization, previews and exports are local</li>
+              <li>No accounts, no tracking, no hidden analytics or telemetry</li>
+              <li>Folder <em>writing</em> happens only after an explicit "read &amp; write" permission grant</li>
+              <li>The desktop app keeps the same promise — it even shows a preview and one-click undo</li>
+            </ul>
+            <p style="margin-top: var(--s-4)"><a href="./privacy.html">Read the full privacy details →</a></p>
+          </div>
+          <div class="card reveal" style="padding: var(--s-6)">
+            <h3 style="display:flex; align-items:center; gap: 10px">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="color: var(--success)" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+              What browsers can and can't do
+            </h3>
+            <div class="table-wrap"><table class="text-sm" style="width:100%; border-collapse: collapse">
+              <tbody style="color: var(--text-muted)">
+                <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 8px 10px 0">Read files &amp; folders</td><td style="color:var(--success); text-align:right; white-space:nowrap">All browsers ✓</td></tr>
+                <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 8px 10px 0">Sort into a real folder</td><td style="color:var(--accent-cyan); text-align:right; white-space:nowrap">Chrome / Edge ✓</td></tr>
+                <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 8px 10px 0">Organized ZIP download</td><td style="color:var(--success); text-align:right; white-space:nowrap">All browsers ✓</td></tr>
+                <tr style="border-bottom:1px solid var(--border)"><td style="padding:10px 8px 10px 0">Watch folders automatically</td><td style="color:var(--danger); text-align:right; white-space:nowrap">Not possible ✗</td></tr>
+                <tr><td style="padding:10px 8px 10px 0">Detect true duplicates</td><td style="color:var(--success); text-align:right; white-space:nowrap">All browsers ✓</td></tr>
+              </tbody>
+            </table></div>
+            <p class="text-muted text-sm" style="margin-bottom:0">Capability panels on this site always tell you which one applies to <em>your</em> browser.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ USE CASES ============ -->
+    <section class="section" aria-labelledby="use-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">Use cases</span>
+          <h2 id="use-h">Where the mess actually happens</h2>
+        </div>
+        <div class="grid grid-4" style="margin-top: var(--s-5)">
+          <div class="card reveal"><h3>🪨 Downloads folder</h3><p>Installers, PDFs, screenshots and ZIPs into calm category folders — by type or by month.</p></div>
+          <div class="card reveal"><h3>🖥️ Desktop cleanup</h3><p>Screenshot 214? screenshot 215? Send them to Images while documents stay put.</p></div>
+          <div class="card reveal"><h3>📁 Project handovers</h3><p>Group deliverables, produce a manifest, hand over a folder that makes sense to other people.</p></div>
+          <div class="card reveal"><h3>💾 SD card offload</h3><p>Photos, clips and voice notes sorted before they hit your long-term storage.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FAQ ============ -->
+    <section class="section" aria-labelledby="faq-h">
+      <div class="container" style="max-width: 780px">
+        <div class="section-head reveal">
+          <span class="eyebrow">FAQ</span>
+          <h2 id="faq-h">Fair questions, straight answers</h2>
+        </div>
+        <div class="grid" style="gap: var(--s-3)" id="faq-list">
+          <!-- FAQ content is static HTML for SEO; see partial below -->
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Are my files uploaded anywhere?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">No. There is no server involved in organizing — everything runs as JavaScript in your own browser tab. You can even use it offline once the page has loaded.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Can it organize into a real folder on my disk?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Yes, in Chromium browsers (Chrome, Edge, Opera, Brave) via the File System Access API — you explicitly grant "read &amp; write" for the folder you pick. Firefox and Safari don't support folder writes yet, so AuraFlow offers an organized ZIP download there instead. <a href="./features.html#compatibility">Details</a></p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Will it overwrite my existing files?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Never. Collisions are detected before the run against both the plan itself and the files already present in the destination folder; extra copies get a safe <code>_1</code> suffix, identical to the desktop app's behaviour.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Is it really free?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Yes — the web edition and the Windows desktop app are both free and open source (MIT). No accounts, no subscriptions, no locked features.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">How does duplicate detection work?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Files are grouped by size, then only same-size candidates are hashed (SHA-256) in a background thread, streamed in chunks so memory stays flat. Identical content is flagged even when filenames differ.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">What about the Windows app?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">AuraFlow (desktop) is a separate, full-featured Windows executable with drag &amp; drop, recursive scans and one-click undo. The web edition can't recursively write subfolders like a native app — <a href="./about.html">here's an honest comparison</a>.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FINAL CTA ============ -->
+    <section class="section" aria-labelledby="cta-h">
+      <div class="container">
+        <div class="card reveal" style="text-align:center; padding: clamp(2rem, 1rem + 4vw, 4.5rem); background: linear-gradient(160deg, var(--accent-soft), transparent 60%), var(--surface); border-color: rgba(79,124,255,0.35)">
+          <h2 id="cta-h" style="font-size: var(--fs-2xl)">From digital chaos to clarity — in one click.</h2>
+          <p class="text-muted" style="max-width: 52ch; margin-inline: auto">Pick a folder, review the plan, confirm. If you don't like it — undo. That's the whole product.</p>
+          <div style="display:flex; gap: var(--s-3); justify-content:center; flex-wrap:wrap; margin-top: var(--s-5)">
+            <a class="btn btn-primary" href="./organizer.html">Organize My Files</a>
+            <a class="btn btn-ghost" href="./guide.html">Read the guide</a>
+          </div>
+          <p class="text-sm text-muted" style="margin-top: var(--s-4)">Prefer installing? The <a target="_blank" rel="noopener noreferrer" href="https://github.com/heyitssuzain/File-Organiser">Windows desktop app</a> is free, open-source and a ~26&nbsp;MB download.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/pages/home.ts"></script>
+</body>
+</html>

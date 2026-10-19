@@ -1,0 +1,6 @@
+/* Inline demo styles (home page) */
+#demo .card.drag-on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
