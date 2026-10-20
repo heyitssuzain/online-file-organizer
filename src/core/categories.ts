@@ -138,6 +138,14 @@ export const CATEGORIES: readonly Category[] = [
 
 const OTHERS = 'Others';
 
+/** Folder names this app creates for the "by type"/"by extension" rules. */
+export const CATEGORY_NAMES: ReadonlySet<string> = new Set(CATEGORIES.map((c) => c.name));
+
+/** True when a folder name matches one of this app's category folders. */
+export function isCategoryFolderName(name: string): boolean {
+  return CATEGORY_NAMES.has(name);
+}
+
 /** Flat extension → category-name map, built lowercase once (case-insensitive lookup). */
 const EXT_MAP: ReadonlyMap<string, string> = (() => {
   const m = new Map<string, string>();

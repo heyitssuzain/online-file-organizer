@@ -122,8 +122,15 @@
         <div class="card" id="execWrite" hidden>
           <h3>Ready to sort into your folder</h3>
           <p class="text-muted" id="execWriteDesc"></p>
-          <button class="btn btn-primary" type="button" id="btnGrantWrite">Choose the folder &amp; grant "read &amp; write"</button>
-          <p class="text-xs text-faint">Your browser will ask for permission. AuraFlow only writes into the folder you explicitly pick.</p>
+          <label class="switch" style="margin: 0 0 var(--s-3)">
+            <input type="checkbox" id="optKeepOriginals" />
+            <span>Copy instead of move — keep the originals</span>
+          </label>
+          <div class="actions-row">
+            <button class="btn btn-primary" type="button" id="btnSortHere" style="display:none">Sort inside this folder</button>
+            <button class="btn btn-primary" type="button" id="btnGrantWrite">Choose a different folder</button>
+          </div>
+          <p class="text-xs text-faint">Your browser will ask for permission. Move writes a verified copy first, then removes the original; Copy leaves originals untouched. Nothing is overwritten — name conflicts are renamed.</p>
         </div>
         <div class="card" id="execZip" hidden>
           <h3>Organized download (ZIP)</h3>

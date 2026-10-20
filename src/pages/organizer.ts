@@ -19,7 +19,7 @@ import {
   DEFAULT_OPTIONS,
   PlanEntry,
 } from '../core/plan.js';
-import { createManifest, Manifest } from '../core/manifest.js';
+import { createManifest, Manifest, statusOf } from '../core/manifest.js';
 import { downloadManifestCsv, downloadManifestJson, downloadReportTxt, downloadBlob } from '../core/export.js';
 import { buildZip, ZipEntry } from '../core/zip.js';
 import { forEachChunk, groupByHash } from '../core/hash.js';
@@ -29,10 +29,13 @@ import {
   pickDirectory,
   readDirectoryHandle,
   readFromDrop,
+  readFromInput,
+  snapshotDestinations,
+  verifyPermission,
   DirHandle,
-  MAX_FILES,
+  ReadRecursiveResult,
 } from '../fs/access.js';
-import { executePlan, undoMoves, OpSession, ExecResult } from '../fs/operations.js';
+import { executePlan, undoMoves, OpSession, ExecResult, ExecMode, SourceMap, SourceMeta } from '../fs/operations.js';
 import { toast, ICONS } from '../site/layout.js';
 
 // ---------- state ------------------------------------------------------------
@@ -40,16 +43,20 @@ interface Selection {
   files: File[];
   rootName: string;
   dirHandle: DirHandle | null;
+  sources: SourceMap;
 }
 
-let sel: Selection = { files: [], rootName: '', dirHandle: null };
+let sel: Selection = { files: [], rootName: '', dirHandle: null, sources: new Map() };
 let plan: Plan | null = null;
 let opts: Options = { ...DEFAULT_OPTIONS };
 let manifest: Manifest | null = null;
 let undoLog: ExecResult['undo'] = [];
 let lastDirHandle: DirHandle | null = null;
+let lastSourceHandle: DirHandle | null = null;
 const session = new OpSession();
 let hashJobId = 0;
+let planVersion = 0;
+let hasExecuted = false;
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const all = <T extends HTMLElement>(selector: string) => [...document.querySelectorAll(selector)] as T[];
@@ -85,7 +92,7 @@ $('btnFolder').addEventListener('click', async () => {
       const res = await readDirectoryHandle(dir, {
         onProgress: (n) => ($('appHeadStatus').textContent = `Reading ${n} files…`),
       });
-      remember(res.files, dir.name, dir, res.warnings);
+      remember(res, dir.name, dir);
       return;
     }
     toast('Folder access was cancelled — falling back to the classic picker', '');
@@ -109,13 +116,12 @@ $('btnFiles').addEventListener('click', () => $('fileInput').click());
 
 function useInputFiles(list: FileList, isFolder: boolean): void {
   const files = [...list];
-  const warnings = files.length > MAX_FILES ? [`Selection capped at the first ${MAX_FILES} of ${files.length} files.`] : [];
   const rootName = isFolder
     ? trimmedRoot(files[0])
     : files.length === 1
       ? files[0]!.name
       : `${files.length} selected files`;
-  remember(files.slice(0, MAX_FILES), rootName, null, warnings);
+  remember(readFromInput(files), rootName, null);
 }
 
 function trimmedRoot(first: File | undefined): string {
@@ -139,41 +145,63 @@ dz.addEventListener('drop', async (e) => {
   const drag = e as DragEvent;
   const res = await readFromDrop(drag);
   if (res) {
-    remember(res.files, res.files.length === 1 ? res.files[0]!.name : 'dropped files', null, res.warnings);
+    const rootName = res.root?.name ?? (res.files.length === 1 ? res.files[0]!.name : 'dropped files');
+    remember(res, rootName, res.root ?? null);
   } else if (drag.dataTransfer?.files?.length) {
     const files = [...drag.dataTransfer.files];
-    const warnings = files.length > MAX_FILES ? [`Selection capped at the first ${MAX_FILES} of ${files.length} files.`] : [];
-    remember(files.slice(0, MAX_FILES), files.length === 1 ? files[0]!.name : 'dropped files', null, warnings);
+    remember(readFromInput(files), files.length === 1 ? files[0]!.name : 'dropped files', null);
   } else {
     toast('Nothing readable was dropped — try files or a folder', 'err');
   }
 });
 
-function remember(files: readonly File[], rootName: string, dir: DirHandle | null, warnings: string[] = []): void {
-  sel = { files: [...files], rootName, dirHandle: dir };
+function sourcesFrom(res: ReadRecursiveResult): SourceMap {
+  const sources = new Map<File, SourceMeta>();
+  for (const file of res.files) {
+    sources.set(file, {
+      path: res.paths.get(file) ?? file.name,
+      handle: res.handles.get(file),
+      parent: res.parents.get(file),
+    });
+  }
+  return sources;
+}
+
+function remember(res: ReadRecursiveResult, rootName: string, dir: DirHandle | null): void {
+  sel = { files: [...res.files], rootName, dirHandle: dir, sources: sourcesFrom(res) };
   manifest = null;
   undoLog = [];
+  lastDirHandle = null;
+  lastSourceHandle = null;
+  hasExecuted = false;
   resetResults();
 
-  const hasFiles = files.length > 0;
+  const hasFiles = res.files.length > 0;
   $('workspace').hidden = !hasFiles;
-  $('countBadge').textContent = String(files.length);
+  $('countBadge').textContent = String(res.files.length);
 
   if (hasFiles) {
-    $('appHeadStatus').textContent = `“${rootName}” — ${files.length} file${files.length === 1 ? '' : 's'} selected. Review the plan below, then confirm.`;
+    $('appHeadStatus').textContent = `“${rootName}” — ${res.files.length} file${res.files.length === 1 ? '' : 's'} selected. Review the plan below, then confirm.`;
+  } else if (res.warnings.some((w) => w.startsWith('Skipped '))) {
+    $('appHeadStatus').textContent =
+      'No new files found — this folder already contains organized output, which was skipped. Add new files or pick a different folder.';
   } else {
     $('appHeadStatus').textContent = 'No readable files found — try a different folder.';
   }
 
   replan();
-  for (const w of warnings) toast(w, 'err');
+  for (const w of res.warnings) toast(w, /^Skipped /.test(w) ? '' : 'err');
   if (hasFiles && innerWidth < 980) $('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 $('btnClear').addEventListener('click', () => {
-  sel = { files: [], rootName: '', dirHandle: null };
+  sel = { files: [], rootName: '', dirHandle: null, sources: new Map() };
   plan = null;
   hashJobId++;
+  planVersion++;
+  lastDirHandle = null;
+  lastSourceHandle = null;
+  hasExecuted = false;
   $('workspace').hidden = true;
   $('countBadge').textContent = '0';
   resetResults();
@@ -215,6 +243,7 @@ function skipLabel(r: string): string {
     case 'system': return 'system — skipped';
     case 'pattern': return 'excluded';
     case 'category-filter': return 'not selected';
+    case 'already-organized': return 'already organized';
     default: return '';
   }
 }
@@ -233,27 +262,33 @@ $('optSystem').addEventListener('change', (e) => { opts.excludeSystem = (e.targe
 // ---------- plan preview ---------------------------------------------------------
 function replan(): void {
   if (!sel.files.length) return;
+  const version = ++planVersion;
   plan = buildPlan(sel.files, opts);
+  renderPlan();
 
+  if (!sel.dirHandle) return;
+  const destinations = [...new Set(plan.entries.filter((e) => !e.skip).map((e) => e.destination))];
+  if (!destinations.length) return;
+
+  // Re-plan with the files already inside destination folders so the preview
+  // resolves collisions before execution (execution re-checks at write time).
+  void snapshotDestinations(sel.dirHandle, destinations)
+    .then((existing) => {
+      if (version !== planVersion || !sel.files.length) return;
+      plan = buildPlan(sel.files, opts, existing);
+      renderPlan();
+    })
+    .catch(() => {
+      /* preview stays usable; execution re-checks collisions */
+    });
+}
+
+function renderPlan(): void {
+  if (!plan) return;
   const out = $('planOut');
   const groups: string[] = [];
 
   for (const [name, files] of plan.byCategory) {
-    const folderLabel =
-      opts.rule === 'type'
-        ? `${name}/`
-        : opts.rule === 'date'
-          ? `${firstMonth(files)}}${'/' /* fixed below */}`
-          : `${'<ext>'}/…`;
-    const head =
-      opts.rule === 'type'
-        ? `${name}/`
-        : opts.rule === 'date'
-          ? `${firstMonth(files)}/${name}/`
-          : `${'.' + (files[0]!.name.split('.').pop() ?? '')}/`;
-    void folderLabel;
-    void head;
-
     groups.push(`
       <div class="plan-cat">
         <div class="plan-cat-head">
@@ -304,10 +339,15 @@ function planFolderLabel(category: string, files: PlanEntry[]): string {
   return extFolder ? `${extFolder}/` : 'no-extension/';
 }
 
+function sourcePathFor(e: PlanEntry): string {
+  return sel.sources.get(e.file)?.path ?? e.name;
+}
+
 function renderPlanRow(e: PlanEntry): string {
-  const folder = e.destination.length ? e.destination.slice(0, -1 + 1).join('/') : '';
+  const folder = e.destination.join('/');
+  const source = sourcePathFor(e);
   return `<div class="plan-row${e.renamed ? ' is-renamed' : ''}">
-    <span class="src" title="${escapeHtml(e.name)}">${escapeHtml(e.name)}</span>
+    <span class="src" title="${escapeHtml(source)}">${escapeHtml(source)}</span>
     <span class="arrow" aria-hidden="true">→</span>
     <span class="dest">
       <span class="plan-arrow-dest">
@@ -415,8 +455,8 @@ $('btnDownloadCsv').addEventListener('click', () => {
 function planToManifest(): Manifest {
   const m = createManifest(sel.rootName, opts.rule);
   for (const e of plan?.entries ?? []) {
-    if (e.skip) m.skipped.push({ file: e.name, reason: e.skip });
-    else m.moves.push({ from: e.name, to: destinationPath(e), category: e.category, size: e.size });
+    if (e.skip) m.skipped.push({ file: sourcePathFor(e), reason: e.skip });
+    else m.moves.push({ from: sourcePathFor(e), to: destinationPath(e), category: e.category, size: e.size });
   }
   return m;
 }
@@ -424,13 +464,24 @@ function planToManifest(): Manifest {
 // ---------- execute --------------------------------------------------------------------
 $('btnExecute').addEventListener('click', () => {
   if (!plan || plan.organizedFiles === 0) return;
+  if (hasExecuted) {
+    toast('This plan has already run — select the folder again to start a fresh run', 'err');
+    return;
+  }
   resetResults();
 
   if (capabilities().directWrite) {
     $('execWrite').hidden = false;
     $('execZip').hidden = true;
-    const exts = plan.byCategory.size;
-    $('execWriteDesc').textContent = `${plan.organizedFiles} files will move into ${exts} categor${exts === 1 ? 'y' : 'ies'} inside the folder you pick next. Nothing is overwritten — conflicts are renamed. You can undo afterwards.`;
+
+    const keep = $('optKeepOriginals') as HTMLInputElement;
+    const canMove = !!sel.dirHandle && capabilities().directMove;
+    keep.disabled = !canMove;
+    keep.checked = !canMove; // move is impossible without a source handle
+    const sortBtn = $('btnSortHere') as HTMLElement;
+    sortBtn.hidden = !sel.dirHandle;
+    sortBtn.style.display = sel.dirHandle ? '' : 'none';
+    updateExecDescription();
   } else {
     $('execWrite').hidden = true;
     $('execZip').hidden = false;
@@ -438,14 +489,49 @@ $('btnExecute').addEventListener('click', () => {
   $('executePanel').hidden = false;
 });
 
+$('optKeepOriginals').addEventListener('change', updateExecDescription);
+
+function currentMode(): ExecMode {
+  const keep = $('optKeepOriginals') as HTMLInputElement;
+  return keep.checked || !capabilities().directMove ? 'copy' : 'move';
+}
+
+function updateExecDescription(): void {
+  const n = plan?.organizedFiles ?? 0;
+  const mode = currentMode();
+  const where = sel.dirHandle
+    ? `inside “${sel.rootName}” or into a different folder you choose`
+    : 'into a destination folder you choose';
+  const safety = mode === 'move'
+    ? ' A verified copy is written first; each original is removed only after that verification.'
+    : ' Originals stay untouched.';
+  const why = !sel.dirHandle
+    ? ' Direct move needs a folder selected with the folder picker; for individually selected files the browser cannot remove the originals.'
+    : '';
+  $('execWriteDesc').textContent =
+    `${n} file${n === 1 ? '' : 's'} will be ${mode === 'move' ? 'moved' : 'copied'} ${where}.${safety}${why} Nothing is overwritten — conflicts are renamed.`;
+}
+
+$('btnSortHere').addEventListener('click', async () => {
+  if (!sel.dirHandle) return;
+  if (!(await verifyPermission(sel.dirHandle, 'readwrite'))) {
+    toast('Write permission was denied — nothing was changed', 'err');
+    return;
+  }
+  await runExecute(sel.dirHandle, currentMode(), sel.dirHandle);
+});
+
 $('btnGrantWrite').addEventListener('click', async () => {
   const dir = await pickDirectory();
   if (!dir) {
-    toast('No folder was granted — nothing was organized', 'err');
+    toast('No destination folder was granted — nothing was changed', 'err');
     return;
   }
-  lastDirHandle = dir;
-  await runExecute(dir);
+  if (!(await verifyPermission(dir, 'readwrite'))) {
+    toast('Write permission was denied — originals were not touched', 'err');
+    return;
+  }
+  await runExecute(dir, currentMode(), sel.dirHandle);
 });
 
 $('btnZipGo').addEventListener('click', async () => {
@@ -462,11 +548,11 @@ $('btnZipGo').addEventListener('click', async () => {
     downloadBlob(zip.blob, `auraflow-organized-${new Date().toISOString().slice(0, 10)}.zip`);
 
     manifest = planToManifest();
-    for (const mv of manifest.moves) mv.note = 'stored in the organized ZIP (this browser cannot write folders)';
+    for (const mv of manifest.moves) mv.note = 'exported — originals kept';
     undoLog = [];
-    showResults(manifest, false);
+    showResults(manifest, false, 'export');
     finishProgress();
-    toast(`ZIP built — ${zip.entries} files inside`, 'ok');
+    toast(`ZIP downloaded — ${zip.entries} files inside; originals untouched`, 'ok');
   } catch (err) {
     finishProgress();
     toast(err instanceof Error ? err.message : 'ZIP building failed', 'err');
@@ -478,31 +564,55 @@ $('btnCancel').addEventListener('click', () => {
   $('execCurrent').textContent = 'cancelling…';
 });
 
-async function runExecute(dir: DirHandle): Promise<void> {
+async function runExecute(target: DirHandle, mode: ExecMode, sourceRoot: DirHandle | null): Promise<void> {
   if (!plan) return;
-  startProgress('Organizing…');
+
+  if (mode === 'move' && (!sourceRoot || !capabilities().directMove)) {
+    toast('This browser cannot remove originals here — choose Copy, or use the ZIP export', 'err');
+    return;
+  }
+  if (mode === 'move') {
+    const ok = confirm(
+      `Move ${plan.organizedFiles} file${plan.organizedFiles === 1 ? '' : 's'}?\n\n` +
+        'A copy is written and verified first. Originals are removed only after that verification. ' +
+        'Existing files are never overwritten (conflicts are renamed).',
+    );
+    if (!ok) return;
+  }
+
+  startProgress(mode === 'move' ? 'Moving…' : 'Copying…');
   session.cancelled = false;
   try {
     const res = await executePlan(
       plan,
-      dir,
+      target,
       sel.rootName,
       {
         onProgress: (done, total, current) => {
           setProgress(done / Math.max(1, total), current);
-          $('execLabel').textContent = `Organizing ${done}/${total}…`;
+          $('execLabel').textContent = `${mode === 'move' ? 'Moving' : 'Copying'} ${done}/${total}…`;
         },
       },
       session,
+      { mode, sources: sel.sources, sourceRoot: sourceRoot ?? undefined, rule: opts.rule },
     );
     finishProgress();
     manifest = res.manifest;
     undoLog = res.undo;
-    showResults(res.manifest, undoLog.length > 0);
+    lastDirHandle = target;
+    lastSourceHandle = sourceRoot;
+    hasExecuted = true;
+    showResults(res.manifest, undoLog.length > 0, mode);
+
+    const moved = res.manifest.moves.filter((mv) => statusOf(mv) === 'moved').length;
+    const copied = res.manifest.moves.length - moved;
+    const counts = `${moved} moved${copied ? `, ${copied} copied` : ''}`;
     toast(
       res.manifest.errors.length
-        ? `Finished with ${res.manifest.errors.length} error${res.manifest.errors.length === 1 ? '' : 's'} — see results`
-        : `Done — ${res.manifest.moves.length} file${res.manifest.moves.length === 1 ? '' : 's'} organized`,
+        ? `Finished with ${res.manifest.errors.length} error${res.manifest.errors.length === 1 ? '' : 's'} — ${counts}; see results`
+        : mode === 'move'
+          ? `Done — ${counts}`
+          : `Done — ${copied} copied (originals kept)`,
       res.manifest.errors.length ? 'err' : 'ok',
     );
     if (innerWidth < 980) $('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -519,16 +629,21 @@ function resetResults(): void {
   undoLog = [];
 }
 
-function showResults(m: Manifest, canUndo: boolean): void {
+function showResults(m: Manifest, canUndo: boolean, workflow: 'move' | 'copy' | 'export', note?: string): void {
   $('resultsPanel').hidden = false;
+
+  const moved = m.moves.filter((mv) => statusOf(mv) === 'moved').length;
+  const copied = m.moves.length - moved;
+  const primaryLabel = workflow === 'export' ? 'exported (originals kept)' : workflow === 'copy' ? 'copied (originals kept)' : 'moved';
 
   $('resultsHead').innerHTML = `
     <h2 id="results-h" style="font-size:var(--fs-xl); margin-bottom:4px">Run summary</h2>
     <p class="text-muted text-sm">${new Date(m.createdAt).toLocaleString()} — from “${escapeHtml(m.root)}”, organized by ${escapeHtml(m.rule)}.</p>
+    ${note ? `<p class="text-sm" style="margin:0 0 var(--s-2); color:var(--success); font-weight:600">${escapeHtml(note)}</p>` : ''}
     <div class="results-summary" role="list">
-      <div class="res-stat" role="listitem"><b style="color:var(--success)">${m.moves.length}</b><span>organized</span></div>
+      <div class="res-stat" role="listitem"><b style="color:var(--success)">${workflow === 'move' ? moved : copied}</b><span>${primaryLabel}</span></div>
       <div class="res-stat" role="listitem"><b>${m.skipped.length}</b><span>skipped (by settings)</span></div>
-      <div class="res-stat" role="listitem"><b>${m.moves.filter((mv) => mv.note?.startsWith('copied')).length}</b><span>copied (original kept)</span></div>
+      ${workflow === 'move' ? `<div class="res-stat" role="listitem"><b>${copied}</b><span>copied (original kept)</span></div>` : ''}
       <div class="res-stat" role="listitem"><b style="color:${m.errors.length ? 'var(--danger)' : 'inherit'}">${m.errors.length}</b><span>errors</span></div>
     </div>`;
 
@@ -584,6 +699,7 @@ $('btnUndo').addEventListener('click', async () => {
     toast('Nothing recorded to undo in this session', 'err');
     return;
   }
+  const sourceRoot = lastSourceHandle ?? lastDirHandle;
   const ok = confirm(
     `Undo this run? ${undoLog.length} file${undoLog.length === 1 ? '' : 's'} will return to their original place. (Desktop-app style undo — only possible while this tab stays open.)`,
   );
@@ -591,7 +707,7 @@ $('btnUndo').addEventListener('click', async () => {
 
   startProgress('Undoing…');
   try {
-    const res = await undoMoves(undoLog, lastDirHandle, {
+    const res = await undoMoves(undoLog, lastDirHandle, sourceRoot, {
       onProgress: (done, total, current) => {
         setProgress(done / Math.max(1, total), current);
         $('execLabel').textContent = `Restoring ${done}/${total}…`;
@@ -601,9 +717,19 @@ $('btnUndo').addEventListener('click', async () => {
 
     if (res.failed.length === 0) {
       toast(`Undo complete — ${res.restored} file${res.restored === 1 ? '' : 's'} moved back`, 'ok');
+      const copiedBefore = manifest?.moves.filter((mv) => statusOf(mv) !== 'moved').length ?? 0;
+      const rule = manifest?.rule ?? opts.rule;
       undoLog = [];
-      const empty = createManifest(sel.rootName, opts.rule);
-      showResults({ ...empty, moves: manifest?.moves ?? [], errors: [{ file: '(all restored)', message: 'Run was undone — files are back in their original place.' }] }, false);
+      const empty = createManifest(sel.rootName, rule);
+      manifest = { ...empty, moves: [] };
+      showResults(
+        manifest,
+        false,
+        'move',
+        copiedBefore
+          ? `Run was undone — ${res.restored} moved file${res.restored === 1 ? '' : 's'} restored. ${copiedBefore} copied file${copiedBefore === 1 ? '' : 's'} remain in the destination folder (originals were kept).`
+          : 'Run was undone — files are back in their original place.',
+      );
       ($('btnUndo') as HTMLElement).style.display = 'none';
     } else {
       toast(`Undo restored ${res.restored} files; ${res.failed.length} failed — they may have been moved manually`, 'err');

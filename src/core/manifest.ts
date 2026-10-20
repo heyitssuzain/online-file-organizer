@@ -20,7 +20,7 @@ export interface MoveRecord {
 
 export interface SkipRecord {
   file: string;
-  reason: 'temp' | 'system' | 'pattern' | 'category-filter' | 'user-unchecked';
+  reason: 'temp' | 'system' | 'pattern' | 'category-filter' | 'user-unchecked' | 'already-organized';
   detail?: string;
 }
 
@@ -63,7 +63,7 @@ export function createManifest(root: string, rule: string): Manifest {
 export function manifestToRows(m: Manifest): string[][] {
   const rows: string[][] = [['original_path', 'destination_path', 'category', 'size_bytes', 'status']];
   for (const mv of m.moves) {
-    rows.push([mv.from, mv.to, mv.category, String(mv.size), 'moved']);
+    rows.push([mv.from, mv.to, mv.category, String(mv.size), statusOf(mv)]);
   }
   for (const s of m.skipped) {
     rows.push([s.file, '', s.reason, '', 'skipped']);
@@ -74,6 +74,13 @@ export function manifestToRows(m: Manifest): string[][] {
   return rows;
 }
 
+/** Honest operation status derived from the manifest annotation. */
+export function statusOf(mv: MoveRecord): 'moved' | 'copied' | 'exported' {
+  if (mv.note?.startsWith('copied')) return 'copied';
+  if (mv.note?.startsWith('exported')) return 'exported';
+  return 'moved';
+}
+
 /** Human-readable run report, modelled on the desktop's text report. */
 export function manifestToText(m: Manifest): string {
   const lines: string[] = [];
@@ -82,9 +89,12 @@ export function manifestToText(m: Manifest): string {
   lines.push(`Source: ${m.root}`);
   lines.push(`Rule: ${m.rule}`);
   lines.push('');
-  lines.push('Moved');
+  lines.push('Results');
   if (m.moves.length === 0) lines.push('  (none)');
-  for (const mv of m.moves) lines.push(`  ${mv.from}  →  ${mv.to}`);
+  for (const mv of m.moves) {
+    const note = mv.note ? `  [${mv.note}]` : '';
+    lines.push(`  ${mv.from}  →  ${mv.to}  (${statusOf(mv)})${note}`);
+  }
   if (m.skipped.length) {
     lines.push('');
     lines.push('Skipped');
@@ -95,8 +105,12 @@ export function manifestToText(m: Manifest): string {
     lines.push('Errors');
     for (const e of m.errors) lines.push(`  ${e.file}  — ${e.message}`);
   }
+  const moved = m.moves.filter((mv) => statusOf(mv) === 'moved').length;
+  const copied = m.moves.filter((mv) => statusOf(mv) !== 'moved').length;
   lines.push('');
-  lines.push(`${m.moves.length} moved · ${m.skipped.length} skipped · ${m.errors.length} errors`);
+  lines.push(
+    `${moved} moved · ${copied ? `${copied} copied/exported · ` : ''}${m.skipped.length} skipped · ${m.errors.length} errors`,
+  );
   return lines.join('\n');
 }
 
