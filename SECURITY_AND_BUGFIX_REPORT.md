@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-20  
 **Repo:** `heyitssuzain/File-Organizer-Web` (local working copy)  
-**Status:** Fixed and verified locally, and mirrored as uncommitted changes into the Vercel-connected clone. **Not committed, pushed, or deployed.**
+**Status:** Fixed, pushed to GitHub, deployed to Vercel production, and verified against the live site.
 
 ---
 
@@ -206,14 +206,20 @@ The bundled Playwright Chromium headless shell was incomplete on this machine (`
 
 - Changes were developed and tested in:
   `C:\Users\ADMIN\Desktop\Aura\File-Organizer-Web`
-- The Vercel-connected source is a **different repository**:
+- Production source repository:
   `heyitssuzain/online-file-organizer`
-- The same tested patch is present there as **uncommitted working-tree changes** in
-  `C:\Users\ADMIN\AppData\Local\Temp\opencode\online-file-organizer`.
-- The connected clone was also typechecked and tested there: **83/83 tests passed**.
-- No commit, push, or deployment was performed.
+- Commit pushed to `main`:
+  `c3b47dd — Fix folder discovery, verified moves, and ZIP fallback honesty`
+- Vercel auto-deployed the commit to Production.
+- Live URL:
+  `https://online-file-organizer.vercel.app/`
+- Live verification:
+  - production page returns HTTP 200 and serves the new organizer controls
+  - new organizer JavaScript includes the verified-move/source-change guards
+  - live browser flow: folder discovery + same-folder move + undo, copy mode, and unsupported-browser ZIP fallback all passed
+  - live smoke suite: **38/38 passed**, including custom 404 handling, canonical/OG metadata, sitemap, and no console/network errors
 - No unrelated files were modified; the Google verification file and SEO output were left untouched.
-- The live site will continue to run the old behaviour until the tested patch is committed/pushed to the connected repository and Vercel deploys it.
+- Temporary verification harnesses were removed before publishing; generated `dist/`, screenshot artifacts, and local clone scratch files were cleaned up.
 
 ### Manual verification checklist after deployment
 
