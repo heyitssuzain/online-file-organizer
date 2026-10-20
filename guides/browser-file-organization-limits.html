@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Browser file organization: capabilities and limits — AuraFlow Web</title>
-  <meta name="description" content="The honest map of what a web page can do to your files: File API reading, File System Access writes with permission, drag-and-drop, ZIP fallbacks — and what stays impossible in every browser." />
+  <title>Browser File Organization: What's Possible (and Not)</title>
+  <meta name="description" content="What a web page can do to your files: File API reads, permission-based folder writes, drag-and-drop and ZIP fallbacks — plus what stays impossible." />
   <link rel="canonical" href="__BASE_URL__/guides/browser-file-organization-limits.html" />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="Browser file organization: capabilities and limits" />
+  <meta property="og:title" content="Browser File Organization: Capabilities and Limits" />
   <meta property="og:description" content="What web apps can do to your files — and what stays desktop-only." />
   <meta property="og:url" content="__BASE_URL__/guides/browser-file-organization-limits.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
@@ -17,10 +17,13 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
+    "image": "__BASE_URL__/og-cover.png",
     "headline": "Browser file organization: capabilities and limits",
     "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
-    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "datePublished": "2026-10-19",
+    "dateModified": "2026-10-20",
     "mainEntityOfPage": "__BASE_URL__/guides/browser-file-organization-limits.html"
   }
   </script>
@@ -32,7 +35,7 @@
     <div class="container">
       <nav aria-label="Breadcrumb" class="crumbs">
         <ol>
-          <li><a href="../index.html">Home</a></li>
+          <li><a href="../">Home</a></li>
           <li><a href="/guides/">Guides</a></li>
           <li aria-current="page">Browser capabilities</li>
         </ol>
@@ -40,7 +43,7 @@
 
       <article class="article">
         <h1>Browser file organization: capabilities and limits, honestly mapped</h1>
-        <span class="date">Updated October 2026 · 6 min read</span>
+        <span class="date">By Suzain · Updated October 2026 · 6 min read</span>
 
         <p class="lede">Browsers are security fortresses around your disk, and rightly so. But the fortress has gates — and the honest way to build a web file manager is to know exactly which gates exist. Here is the map, browser-agnostic and vendor-flavored, plus what each limitation means in practice for a user, not just for a developer.</p>
 

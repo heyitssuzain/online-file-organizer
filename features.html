@@ -3,16 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Features — organize by type, extension or date · AuraFlow Web</title>
-  <meta name="description" content="Everything AuraFlow Web actually does: 11 categories, organize by type/extension/date, batch processing, SHA-256 duplicate detection, conflict-safe renames, plan previews, manifests and undo — plus honest browser limitations." />
+  <title>Features — Categories, Duplicate Scan &amp; Undo | AuraFlow</title>
+  <meta name="description" content="See how AuraFlow sorts by type, extension or date, detects duplicates with SHA-256, avoids overwrites, previews every move, and exports an undo-ready manifest." />
   <link rel="canonical" href="__BASE_URL__/features.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="AuraFlow Web Features — organize files by type, extension or date" />
-  <meta property="og:description" content="Categorization, duplicate detection, conflict-safe renames, plan previews and manifests — with an honest list of browser limitations." />
+  <meta property="og:title" content="AuraFlow Features — Safe, Local File Organization" />
+  <meta property="og:description" content="Categorization, duplicate detection, conflict-safe renames, plan previews, manifests and honest browser limits." />
   <meta property="og:url" content="__BASE_URL__/features.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="theme-color" content="#0d0e12" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "AuraFlow Web Features",
+    "description": "Categorization, duplicate detection, conflict-safe renames, plan previews, manifests and honest browser limits.",
+    "url": "__BASE_URL__/features.html",
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "__BASE_URL__/" },
+        { "@type": "ListItem", "position": 2, "name": "Features", "item": "__BASE_URL__/features.html" }
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
   <div id="site-header"></div>
@@ -21,7 +38,7 @@
     <div class="container">
       <nav aria-label="Breadcrumb" class="crumbs">
         <ol>
-          <li><a href="./index.html">Home</a></li>
+          <li><a href="./">Home</a></li>
           <li aria-current="page">Features</li>
         </ol>
       </nav>
@@ -35,61 +52,61 @@
       <div class="grid grid-2" style="margin-top: var(--s-6)">
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 4h16v4H4zM4 10h7v10H4zM13 10h7v10h-7z"/></svg></div>
-          <h3>File categorization</h3>
+          <h2 class="card-title">File categorization</h2>
           <p>Eleven categories — Documents, Images, Videos, Audio, Archives, Code, Executables, Design &amp; 3D, Fonts, Data and Others — using the same extension lists as the desktop AuraFlow app. Extensions are treated case-insensitively (<code>.PDF</code> and <code>.pdf</code> behave identically) and unknown extensions flow into <strong>Others</strong> rather than being discarded. An extension is a strong hint, not proof: AuraFlow never reads file contents to classify in the plan, and it tells you so.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h6"/></svg></div>
-          <h3>Three organizing rules</h3>
+          <h2 class="card-title">Three organizing rules</h2>
           <p><strong>By type</strong> — one folder per category (<code>Documents/</code>, <code>Videos/</code>…). <strong>By extension</strong> — a folder per extension (<code>pdf/</code>, <code>jpg/</code>) with a type parent, handy for big mixed sets. <strong>By date</strong> — month folders (<code>2025-04/</code>) using each file's last-modified timestamp as your browser reports it — the only reliable date metadata a web page can read.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="6" cy="6" r="2.2"/><circle cx="6" cy="12" r="2.2"/><circle cx="12" cy="6" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="18" cy="12" r="2.2"/></svg></div>
-          <h3>Batch processing</h3>
+          <h2 class="card-title">Batch processing</h2>
           <p>Select hundreds (or up to 5,000 files) at once. The panel shows totals per category, skipped files (temporary/system), flagged unknown extensions and naming conflicts before anything moves. Scans beyond 5,000 files are capped with a visible warning — a browser tab stays responsive where a desktop app would happily keep going, and the cap is honest about it.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="8" y="4" width="12" height="16" rx="2"/><path d="M4 8v10a2 2 0 0 0 2 2h8"/></svg></div>
-          <h3>Duplicate detection (content hashing)</h3>
+          <h2 class="card-title">Duplicate detection (content hashing)</h2>
           <p>Files are grouped by exact size first; only same-size candidates are hashed with SHA-256, streamed in 4 MB slices inside a Web Worker so memory stays flat. Identical content gets flagged even when the filenames differ — and files that merely share a name are <em>never</em> labelled duplicates. Files over 512 MB are excluded with a visible notice.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a1 1 0 0 1 1-1h5l2 2h7a1 1 0 0 1 1 1v2"/><rect x="4" y="7" width="16" height="13" rx="1.5"/><path d="M9 12h2"/></svg></div>
-          <h3>Conflict-safe naming</h3>
+          <h2 class="card-title">Conflict-safe naming</h2>
           <p>Every proposed destination is checked against both the plan itself and — in sort-into-folder mode — the files already in each destination folder. Collisions get the same <code>name_1.ext</code> treatment as the desktop app, step by step, and renamed entries carry a visible badge in the plan. Invalid characters (<code>&lt;&gt;:"/\|?*</code> and control characters) are sanitized so names survive on Windows, macOS and Linux alike.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg></div>
-          <h3>Plan preview &amp; confirmation</h3>
+          <h2 class="card-title">Plan preview &amp; confirmation</h2>
           <p>Before anything happens, you see every file, its category and its proposed destination — with counts, total size and conflict badges. Nothing moves until you explicitly choose the destination folder and confirm. That is the same preview-first philosophy the desktop AuraFlow was built on.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg></div>
-          <h3>Exportable manifests &amp; reports</h3>
+          <h2 class="card-title">Exportable manifests &amp; reports</h2>
           <p>Every plan and every executed run can be downloaded as JSON (full detail), CSV (auditable table) or a plain-text report. The manifest records original path → destination, category, size, skipped files and every error — enough to explain or manually reverse any change with a normal file manager.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14l-4-4 4-4"/><path d="M5 10h8a6 6 0 0 1 6 6v1"/></svg></div>
-          <h3>Undo</h3>
+          <h2 class="card-title">Undo</h2>
           <p>In sort-into-folder mode (Chromium), every successful move is journaled. One click (or the <code>Undo this run</code> button) moves the latest run's files back to their original places and removes folders that were left empty — mirroring the desktop app's OperationTracker. The undo window is the current tab session: unlike a native app, a browser cannot keep journal promises after you close the page. The manifest remains as a manual fallback.</p>
         </section>
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/></svg></div>
-          <h3>Exclusions &amp; system hygiene</h3>
+          <h2 class="card-title">Exclusions &amp; system hygiene</h2>
           <p>Temporary (<code>.crdownload</code>, <code>.part</code>, <code>.tmp</code>, <code>.bak</code>…) and system files (<code>Thumbs.db</code>, <code>desktop.ini</code>, <code>.DS_Store</code>…) are skipped by default, exactly like the desktop build, and each skip is visible in the plan rather than silent.</p>
         </section>
 
         <section class="card reveal" id="compatibility">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 12h17M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18z"/></svg></div>
-          <h3>Browser compatibility — the honest table</h3>
+          <h2 class="card-title">Browser compatibility — the honest table</h2>
           <div class="table-wrap"><table class="text-sm" style="width:100%; border-collapse:collapse">
             <thead><tr><th scope="col" style="text-align:left; padding:8px 8px 8px 0">Capability</th><th scope="col" style="text-align:left">Chrome/Edge/Opera/Brave</th><th scope="col" style="text-align:left">Firefox</th><th scope="col" style="text-align:left">Safari</th></tr></thead>
             <tbody style="color:var(--text-muted)">
@@ -107,7 +124,7 @@
 
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3m0 8v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></div>
-          <h3>Known limits (stated plainly)</h3>
+          <h2 class="card-title">Known limits (stated plainly)</h2>
           <ul class="text-muted text-sm" style="margin:0; padding-left:1.1rem; display:grid; gap:6px">
             <li>A web page sees last-modified dates and sizes — not true creation dates or camera metadata</li>
             <li>Recursive depth is capped at 3 levels when reading with folder permission</li>

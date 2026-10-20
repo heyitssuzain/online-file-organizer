@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AuraFlow Web — Your Files. Finally Organized. Free online file organizer</title>
-  <meta name="description" content="Organize files by type right in your browser — no uploads, no accounts, no cost. Preview the plan, sort a messy Downloads or Desktop folder into clean category folders in seconds." />
-  <link rel="canonical" href="__BASE_URL__/index.html" />
+  <title>Free Online File Organizer — Sort Files by Type | AuraFlow</title>
+  <meta name="description" content="Sort Downloads, Desktop or project folders into clean categories in your browser. Preview every move, avoid overwrites, and keep files on your device." />
+  <link rel="canonical" href="__BASE_URL__/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AuraFlow Web" />
-  <meta property="og:title" content="AuraFlow Web — Your Files. Finally Organized." />
-  <meta property="og:description" content="Free online file organizer. Sort messy folders into clean categories in your browser — files never leave your device." />
-  <meta property="og:url" content="__BASE_URL__/index.html" />
+  <meta property="og:title" content="Free Online File Organizer — AuraFlow" />
+  <meta property="og:description" content="Sort messy folders into clean categories in your browser. Preview every move, avoid overwrites, and keep files on your device." />
+  <meta property="og:url" content="__BASE_URL__/" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AuraFlow Web — Your Files. Finally Organized." />
@@ -23,10 +23,15 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "AuraFlow Web",
-    "url": "__BASE_URL__/index.html",
+    "url": "__BASE_URL__/",
     "description": "Free browser-based file organizer that sorts files by type, with preview, one-click undo and duplicate detection.",
     "inLanguage": "en",
-    "publisher": { "@type": "Organization", "name": "AuraFlow" }
+    "publisher": {
+      "@type": "Organization",
+      "name": "AuraFlow",
+      "url": "__BASE_URL__/",
+      "sameAs": ["https://github.com/heyitssuzain/File-Organiser"]
+    }
   }
   </script>
   <script type="application/ld+json">
@@ -36,8 +41,10 @@
     "name": "AuraFlow Web",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Any (modern web browser)",
-    "url": "__BASE_URL__/index.html",
+    "url": "__BASE_URL__/",
     "description": "Browser-based file organizer: categorize files by type, extension or date, preview every move, download an organization plan or an organized ZIP.",
+    "isAccessibleForFree": true,
+    "browserRequirements": "Requires JavaScript and a modern browser.",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
   }
   </script>
@@ -50,7 +57,7 @@
     <section class="hero" aria-labelledby="hero-h">
       <div class="container">
         <div class="hero-copy">
-          <span class="hero-kicker">From digital chaos to clarity</span>
+          <span class="hero-kicker">Free online file organizer</span>
           <h1 id="hero-h"><span class="hero-grad">Your files. Finally organized.</span></h1>
           <p class="lede">Organize your files, clean up messy folders, and take control of your digital workspace — with a simple, privacy-conscious workflow that runs entirely in your browser.</p>
           <div class="hero-ctas">
@@ -147,7 +154,7 @@
           <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></div>
             <h3>Preview before anything moves</h3><p>Every destination is previewed. Collisions get a safe <code>file_1.ext</code> rename, exactly like the desktop app.</p></div>
           <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/></svg></div>
-            <h3>Privacy by architecture</h3><p>No servers, no uploads, no analytics. The file processing is your browser's own JavaScript, on your own machine.</p></div>
+            <h3>Privacy by architecture</h3><p>No servers, no uploads, no first-party tracking. The file processing is your browser's own JavaScript, on your own machine.</p></div>
           <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg></div>
             <h3>Exportable manifests</h3><p>Download the full plan or the executed run as JSON, CSV or a readable report — useful for audits and for reversing changes.</p></div>
           <div class="card reveal"><div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
@@ -166,7 +173,7 @@
             <p class="text-muted">AuraFlow Web requests file access only when you choose files, and only in the tab you're using. There is no backend that could ever receive a file, because the organizing logic ships with the page itself.</p>
             <ul class="text-muted" style="padding-left: 1.2rem; display:grid; gap: 0.4rem">
               <li>Nothing is uploaded — all categorization, previews and exports are local</li>
-              <li>No accounts, no tracking, no hidden analytics or telemetry</li>
+              <li>No accounts and no first-party tracking; <a href="./privacy.html">hosting and advertising details</a> are on the privacy page</li>
               <li>Folder <em>writing</em> happens only after an explicit "read &amp; write" permission grant</li>
               <li>The desktop app keeps the same promise — it even shows a preview and one-click undo</li>
             </ul>

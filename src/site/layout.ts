@@ -6,14 +6,20 @@ import { supportsFsAccess } from '../fs/access.js';
 
 const THEMES_KEY = 'auraflow-theme';
 
+/** Vite provides the deploy base with a trailing slash ("/" or "/repo/"). */
+const BASE = import.meta.env.BASE_URL;
+const pageHref = (path: string): string => `${BASE}${path}`;
+
 export const PAGES = {
-  home: { href: '/index.html', label: 'Home' },
-  organizer: { href: '/organizer.html', label: 'Organizer' },
-  features: { href: '/features.html', label: 'Features' },
-  guide: { href: '/guide.html', label: 'Help' },
-  guides: { href: '/guides/', label: 'Guides' },
-  about: { href: '/about.html', label: 'About' },
-  privacy: { href: '/privacy.html', label: 'Privacy' },
+  home: { href: BASE, label: 'Home' },
+  organizer: { href: pageHref('organizer.html'), label: 'Organizer' },
+  features: { href: pageHref('features.html'), label: 'Features' },
+  guide: { href: pageHref('guide.html'), label: 'Help' },
+  guides: { href: pageHref('guides/'), label: 'Guides' },
+  about: { href: pageHref('about.html'), label: 'About' },
+  privacy: { href: pageHref('privacy.html'), label: 'Privacy' },
+  contact: { href: pageHref('contact.html'), label: 'Contact' },
+  terms: { href: pageHref('terms.html'), label: 'Terms' },
 } as const;
 
 function icon(name: string, cls = ''): string {
@@ -43,14 +49,14 @@ export function renderHeader(): string {
     .join('');
 
   const cta = here === '/organizer.html'
-    ? `<a class="btn btn-primary btn-sm" href="/index.html#demo">See it in action</a>`
-    : `<a class="btn btn-primary btn-sm" href="/organizer.html">Organize My Files</a>`;
+    ? `<a class="btn btn-primary btn-sm" href="${PAGES.home.href}#demo">See it in action</a>`
+    : `<a class="btn btn-primary btn-sm" href="${PAGES.organizer.href}">Organize My Files</a>`;
 
   return `
 <a class="skip-link" href="#main">Skip to main content</a>
 <header class="site-header">
   <nav class="nav" aria-label="Main">
-    <a class="brand" href="/index.html" aria-label="AuraFlow Web — home">
+    <a class="brand" href="${PAGES.home.href}" aria-label="AuraFlow Web — home">
       ${brandMark()}
       <span>AuraFlow</span>
       <span class="edition">Web</span>
@@ -76,37 +82,39 @@ export function renderFooter(): string {
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a class="brand" href="/index.html">${brandMark()}<span>AuraFlow</span>&nbsp;<span class="edition">Web</span></a>
+        <a class="brand" href="${PAGES.home.href}">${brandMark()}<span>AuraFlow</span>&nbsp;<span class="edition">Web</span></a>
         <p>Your files. Finally organized. A fast, privacy-first file organizer for your browser — no uploads, no accounts, no cost.</p>
       </div>
       <div class="footer-col">
         <h4>Product</h4>
         <ul>
-          <li><a href="/organizer.html">Organizer</a></li>
-          <li><a href="/features.html">Features</a></li>
-          <li><a href="/index.html#demo">Live demo</a></li>
+          <li><a href="${PAGES.organizer.href}">Organizer</a></li>
+          <li><a href="${PAGES.features.href}">Features</a></li>
+          <li><a href="${PAGES.home.href}#demo">Live demo</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Learn</h4>
         <ul>
-          <li><a href="/guide.html">Help &amp; guide</a></li>
-          <li><a href="/guides/">All guides</a></li>
-          <li><a href="/guides/how-to-clean-up-downloads-folder.html">Clean your Downloads</a></li>
+          <li><a href="${PAGES.guide.href}">Help &amp; guide</a></li>
+          <li><a href="${PAGES.guides.href}">All guides</a></li>
+          <li><a href="${pageHref('guides/how-to-clean-up-downloads-folder.html')}">Clean your Downloads</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Project</h4>
         <ul>
-          <li><a href="/about.html">About</a></li>
+          <li><a href="${PAGES.about.href}">About</a></li>
           <li><a target="_blank" rel="noopener noreferrer" href="https://github.com/heyitssuzain/File-Organiser">Desktop app (Windows)</a></li>
-          <li><a href="/privacy.html">Privacy</a></li>
+          <li><a href="${PAGES.privacy.href}">Privacy</a></li>
+          <li><a href="${PAGES.terms.href}">Terms</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
-          <li><a href="mailto:heyitssuzain@gmail.com">heyitssuzain@gmail.com</a></li>
+          <li><a href="${PAGES.contact.href}">Contact &amp; bug reports</a></li>
+          <li><a href="mailto:thisissaddu3@gmail.com">thisissaddu3@gmail.com</a></li>
         </ul>
       </div>
     </div>
@@ -193,8 +201,11 @@ function normalizePath(pathname: string): string {
 }
 
 function isActive(here: string, href: string): boolean {
-  if (href === '/index.html') return here === '/index.html' || here === '/';
-  return here === href || here.startsWith(href.replace(/\.html$/, ''));
+  const logical = href === BASE
+    ? '/index.html'
+    : (href.startsWith(BASE) ? href.slice(BASE.length - 1) : href);
+  if (logical === '/index.html') return here === '/index.html';
+  return here === logical || here.startsWith(logical.replace(/\.html$/, ''));
 }
 
 export const BROWSER_SUPPORTS_FS = supportsFsAccess();

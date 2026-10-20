@@ -26,6 +26,8 @@ const pages = [
   'privacy.html',
   'guide.html',
   'about.html',
+  'contact.html',
+  'terms.html',
   'guides/',
   'guides/how-to-organize-files-by-type.html',
   'guides/how-to-clean-up-downloads-folder.html',
@@ -63,7 +65,7 @@ const url = (p) => `${BASE}${p}`;
   for (const p of pages) {
     await page.goto(url(p), { waitUntil: 'networkidle' });
   }
-  record('all 12 pages load with zero console errors', errors.length === 0, errors.slice(0, 3).join(' | '));
+  record('all 14 pages load with zero console errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   record('no failed network requests on any page', failures.length === 0, failures.slice(0, 3).join(' | '));
   await ctx.close();
 }
@@ -76,10 +78,10 @@ const url = (p) => `${BASE}${p}`;
   await page.goto(url(''), { waitUntil: 'networkidle' });
 
   const title = await page.title();
-  record('home title contains brand + tagline', /AuraFlow/.test(title) && /Organized/.test(title), title);
+  record('home title contains brand + search keyword', /AuraFlow/.test(title) && /file organizer/i.test(title), title);
 
   const canon = await page.locator('link[rel=canonical]').getAttribute('href');
-  record('canonical link is absolute and correct', /^https:\/\/.+\/index\.html$/.test(canon ?? ''), canon ?? 'missing');
+  record('canonical link is absolute and uses the root URL', /^https:\/\/.+\/$/.test(canon ?? ''), canon ?? 'missing');
 
   const cards = await page.locator('.hf').count();
   record('3D hero composes floating file cards', cards >= 10, `${cards} cards`);
@@ -233,7 +235,7 @@ const url = (p) => `${BASE}${p}`;
   let overflows = [];
   for (const w of widths) {
     await page.setViewportSize({ width: w, height: 900 });
-    for (const p of ['', 'organizer.html', 'features.html', 'guides/']) {
+    for (const p of ['', 'organizer.html', 'features.html', 'guides/', 'contact.html', 'terms.html']) {
       await page.goto(url(p), { waitUntil: 'networkidle' });
       const sw = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body ? document.body.scrollWidth : 0));
       if (sw > w + 2) overflows.push(`${w}px @ ${p || 'index'} (scrollWidth=${sw})`);
@@ -294,28 +296,34 @@ const url = (p) => `${BASE}${p}`;
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   const issues = [];
+  const canonicals = [];
   for (const p of [...pages, '404.html']) {
     await page.goto(url(p), { waitUntil: 'domcontentloaded' });
     const title = (await page.title()) ?? '';
     const desc = await page.locator('meta[name="description"]').getAttribute('content').catch(() => null);
     const canonUrl = await page.locator('link[rel=canonical]').getAttribute('href').catch(() => null);
     if (title.length < 15) issues.push(`${p}: short title`);
-    if (!desc || desc.length < 50) issues.push(`${p}: missing/short description`);
+    if (title.length > 65) issues.push(`${p}: title too long (${title.length})`);
+    if (!desc || (p !== '404.html' && desc.length < 120)) issues.push(`${p}: missing/short description`);
+    if (desc && p !== '404.html' && desc.length > 165) issues.push(`${p}: description too long (${desc.length})`);
     if (p === '404.html') {
-      // 404 pages must NOT be canonicalized — they must be noindex instead.
+      // 404 pages must NOT be canonicalized - they must be noindex instead.
       const robots = await page.locator('meta[name="robots"]').getAttribute('content').catch(() => null);
       if (!/noindex/i.test(robots ?? '')) issues.push('404.html: missing noindex');
       continue; // skip canonical/OG requirements for the 404 page
     }
     if (!/^https:\/\//.test(canonUrl ?? '')) issues.push(`${p}: canonical missing/relative`);
+    if ((canonUrl ?? '').endsWith('/index.html')) issues.push(`${p}: canonical points at index.html`);
+    canonicals.push(canonUrl);
     const og = await page.locator('meta[property="og:title"]').count();
     if (og === 0) issues.push(`${p}: og tags missing`);
   }
-  record('every page has unique-enough title, description, canonical, OG (except 404)', issues.length === 0, issues.slice(0, 4).join(' | '));
+  if (new Set(canonicals).size !== canonicals.length) issues.push('duplicate canonical URLs');
+  record('every page has unique title, description, canonical, OG (except 404)', issues.length === 0, issues.slice(0, 4).join(' | '));
 
   const sitemap = await (await ctx.request.get(`${BASE}sitemap.xml`)).text();
   const sitemapUrls = (sitemap.match(/<loc>/g) ?? []).length;
-  record('sitemap.xml lists all public pages', sitemapUrls >= 12, `${sitemapUrls} urls`);
+  record('sitemap.xml lists all public pages', sitemapUrls >= 14, `${sitemapUrls} urls`);
   const robots = await (await ctx.request.get(`${BASE}robots.txt`)).text();
   record('robots.txt references sitemap', /Sitemap:/i.test(robots));
   await ctx.close();

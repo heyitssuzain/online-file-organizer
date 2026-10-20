@@ -197,6 +197,7 @@ button {
   box-shadow: var(--shadow-1);
 }
 .card h3 { font-size: var(--fs-lg); margin-bottom: var(--s-2); }
+.card h2.card-title { font-size: var(--fs-lg); margin-bottom: var(--s-2); }
 .card p { color: var(--text-muted); font-size: var(--fs-md); margin: 0; }
 
 .card .card-icon {

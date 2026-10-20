@@ -3,16 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — AuraFlow Web and the desktop original</title>
-  <meta name="description" content="AuraFlow began as a free Windows file organizer. AuraFlow Web brings the same categorization engine, preview-first workflow and honest limitations to the browser. Learn the story and the comparison." />
+  <title>About AuraFlow — Free, Open-Source File Organizer</title>
+  <meta name="description" content="AuraFlow began as a free Windows file organizer. Learn the story, the preview-first philosophy, and how the browser edition compares." />
   <link rel="canonical" href="__BASE_URL__/about.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="About AuraFlow — a file organizer you can trust" />
+  <meta property="og:title" content="About AuraFlow — A File Organizer You Can Trust" />
   <meta property="og:description" content="From a free Windows app to a browser edition: the story, the philosophy, and an honest desktop vs. web comparison." />
   <meta property="og:url" content="__BASE_URL__/about.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="theme-color" content="#0d0e12" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About AuraFlow Web",
+    "description": "The story and philosophy behind AuraFlow, a free and open-source file organizer for Windows and the browser.",
+    "url": "__BASE_URL__/about.html",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Suzain",
+      "jobTitle": "Independent developer",
+      "url": "https://github.com/heyitssuzain",
+      "sameAs": ["https://github.com/heyitssuzain"]
+    }
+  }
+  </script>
 </head>
 <body>
   <div id="site-header"></div>
@@ -21,7 +37,7 @@
     <div class="container container-narrow" style="max-width: 800px">
       <nav aria-label="Breadcrumb" class="crumbs">
         <ol>
-          <li><a href="./index.html">Home</a></li>
+          <li><a href="./">Home</a></li>
           <li aria-current="page">About</li>
         </ol>
       </nav>
@@ -33,13 +49,13 @@
       </header>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3>The story so far</h3>
+        <h2 class="card-title">The story so far</h2>
         <p class="text-muted">AuraFlow started as a Windows desktop app: a fast file organizer with a preview screen, one-click undo and a completely offline workflow. It's free and open source — <a target="_blank" rel="noopener" href="https://github.com/heyitssuzain/File-Organiser">the desktop project lives on GitHub</a>, shipped as a lean ~26 MB executable that doesn't even need Python installed.</p>
         <p class="text-muted">AuraFlow Web is its browser sibling: the same category engine and preview-first philosophy, reimplemented with browser technologies so it works on any OS — Windows, macOS, Linux, ChromeOS — without installing anything. The web edition's category lists, collision-renaming rules (-<code>_1</code>, -<code>_2</code>) and exclusion filters are direct ports of the desktop's proven logic, and this site's own test suite verifies that parity.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3>The philosophy</h3>
+        <h2 class="card-title">The philosophy</h2>
         <ul class="text-muted" style="padding-left: 1.1rem; margin-bottom: 0">
           <li><strong>Preview before acting.</strong> A plan you can read beats an action you must hope for.</li>
           <li><strong>Never overwrite.</strong> Collisions get a safe rename, every time.</li>
@@ -50,7 +66,7 @@
       </section>
 
       <section class="card" style="margin-bottom: var(--s-6)">
-        <h3>Desktop app vs. Web edition — the honest comparison</h3>
+        <h2 class="card-title">Desktop app vs. Web edition — the honest comparison</h2>
         <div class="table-wrap"><table class="results-table" style="width:100%">
           <thead><tr><th scope="col" style="text-align:left; padding:6px 10px 6px 0">Capability</th><th scope="col" style="text-align:left">AuraFlow (Windows exe)</th><th scope="col" style="text-align:left">AuraFlow Web</th></tr></thead>
           <tbody style="color:var(--text-muted)">
@@ -71,11 +87,11 @@
 
       <div class="grid grid-2">
         <div class="card">
-          <h3>Who builds this</h3>
-          <p class="text-muted">AuraFlow is an independent open-source project by Suzain (<a target="_blank" rel="noopener" href="https://github.com/heyitssuzain">@heyitssuzain</a>), MIT licensed. No company, no tracking, no revenue pipeline behind your file operations. Questions and bug reports: heyitssuzain@gmail.com.</p>
+          <h2 class="card-title">Who builds this</h2>
+          <p class="text-muted">AuraFlow is an independent open-source project by Suzain (<a target="_blank" rel="noopener" href="https://github.com/heyitssuzain">@heyitssuzain</a>), MIT licensed. No company and no tracking. The site is free; any future advertising will be clearly disclosed and kept away from your file operations. Questions and bug reports: <a href="./contact.html">contact page</a> or <a href="mailto:thisissaddu3@gmail.com">thisissaddu3@gmail.com</a>.</p>
         </div>
         <div class="card">
-          <h3>What's next</h3>
+          <h2 class="card-title">What's next</h2>
           <p class="text-muted" style="margin-bottom:0">Improvements land in the open: better date-organization options, more granular conflict handling, deeper recursive scans where memory allows. The desktop app remains the reference implementation — the web edition follows its lead.</p>
         </div>
       </div>

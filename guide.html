@@ -3,16 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Help &amp; Guide — how to use AuraFlow Web</title>
-  <meta name="description" content="Step-by-step guide for AuraFlow Web: selecting folders, reviewing the plan, resolving errors, understanding browser permissions, organized ZIP downloads and undo. Plus browser requirements." />
+  <title>How to Use AuraFlow — Browser File Organizer Guide</title>
+  <meta name="description" content="Step-by-step help: choose a folder, review the plan, fix permissions, handle errors, download an organized ZIP, undo a run, and check browser support." />
   <link rel="canonical" href="__BASE_URL__/guide.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="How to use AuraFlow Web — the complete guide" />
+  <meta property="og:title" content="How to Use AuraFlow — File Organizer Help Guide" />
   <meta property="og:description" content="Select folders, review plans, handle errors and understand browser permissions — the complete guide." />
   <meta property="og:url" content="__BASE_URL__/guide.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="theme-color" content="#0d0e12" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "How to Use AuraFlow Web",
+    "description": "Step-by-step guide: choose a folder, review the plan, handle permissions and errors, download a ZIP, and undo a run.",
+    "url": "__BASE_URL__/guide.html",
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "__BASE_URL__/" },
+        { "@type": "ListItem", "position": 2, "name": "Help & Guide", "item": "__BASE_URL__/guide.html" }
+      ]
+    }
+  }
+  </script>
 </head>
 <body>
   <div id="site-header"></div>
@@ -21,7 +38,7 @@
     <div class="container container-narrow" style="max-width: 800px">
       <nav aria-label="Breadcrumb" class="crumbs">
         <ol>
-          <li><a href="./index.html">Home</a></li>
+          <li><a href="./">Home</a></li>
           <li aria-current="page">Help &amp; Guide</li>
         </ol>
       </nav>
@@ -33,7 +50,7 @@
       </header>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3 id="step-1">1. Choose what to organize</h3>
+        <h2 class="card-title" id="step-1">1. Choose what to organize</h2>
         <p class="text-muted">On the <a href="./organizer.html">Organizer</a> page you have three ways to select files:</p>
         <ul class="text-muted" style="padding-left: 1.1rem">
           <li><strong>Select folder</strong> — opens your browser's folder picker. In Chrome/Edge, this grants read access and enables real sorting later. Elsewhere it uses the classic picker.</li>
@@ -44,7 +61,7 @@
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3 id="step-2">2. Review the plan</h3>
+        <h2 class="card-title" id="step-2">2. Review the plan</h2>
         <p class="text-muted">Every file appears with its category, size, and proposed destination. Switch the rule at the top of the plan:</p>
         <ul class="text-muted" style="padding-left: 1.1rem">
           <li><strong>By type</strong> — <code>Images/photo.jpg</code>. The classic.</li>
@@ -55,19 +72,19 @@
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3 id="step-3">3. Duplicates (optional)</h3>
+        <h2 class="card-title" id="step-3">3. Duplicates (optional)</h2>
         <p class="text-muted">Click <em>Find duplicates</em>. Files are compared by size first, then by streaming SHA-256 hash — so a genuine duplicate is identical <em>content</em>, found even under different names. AuraFlow flags groups; it never deletes automatically. Move or delete with your own file manager, then re-run the organizer.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3 id="step-4">4. Execute — two honest modes</h3>
+        <h2 class="card-title" id="step-4">4. Execute — two honest modes</h2>
         <p class="text-muted"><strong>Sort into a real folder</strong> (Chrome, Edge, Opera, Brave): after <em>Organize</em>, your browser asks again for the destination folder and <strong>read &amp; write</strong> permission. Confirm once, watch the progress, and the files are moved into category folders. <em>Undo this run</em> restores everything for as long as the tab stays open.</p>
         <p class="text-muted"><strong>Organized ZIP download</strong> (Firefox, Safari, mobile browsers): the browser cannot write folders, so AuraFlow produces a single ZIP mirroring the plan's structure — drop its contents into any folder on your device. You download it; you decide where it lives.</p>
         <p class="text-muted text-sm">Either way, download the manifest (JSON/CSV/TXT) at the end. It lists every move — an audit record and a recipe to undo manually anytime.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h3 id="getting-errors">5. Troubleshooting — every known error, decoded</h3>
+        <h2 class="card-title" id="getting-errors">5. Troubleshooting — every known error, decoded</h2>
         <div class="table-wrap"><table class="results-table" style="width:100%">
           <thead><tr><th scope="col" style="text-align:left; padding:6px 10px 6px 0">What you see</th><th scope="col" style="text-align:left">What it means &amp; the fix</th></tr></thead>
           <tbody style="color:var(--text-muted)">
@@ -83,7 +100,7 @@
       </section>
 
       <section class="card" style="margin-bottom: var(--s-6)">
-        <h3 id="browsers">6. Supported browsers, plainly</h3>
+        <h2 class="card-title" id="browsers">6. Supported browsers, plainly</h2>
         <ul class="text-muted text-sm" style="padding-left: 1.1rem; margin-bottom: 0">
           <li><strong>Chrome 86+, Edge 86+, Opera, Brave</strong> — full experience: folder reading, direct sorting, undo.</li>
           <li><strong>Firefox, Safari 14+</strong> — file reading, planning, duplicates, manifest exports and the organized ZIP. No direct folder writes (browser limitation, not a paywall!).</li>
@@ -93,11 +110,11 @@
 
       <div class="grid grid-2">
         <a class="card" href="./organizer.html" style="text-decoration:none">
-          <h3>Open the Organizer →</h3>
+          <h2 class="card-title">Open the Organizer →</h2>
           <p class="text-muted">Try it now — nothing to install, nothing to sign up for.</p>
         </a>
         <a class="card" href="/guides/" style="text-decoration:none">
-          <h3>Deeper guides →</h3>
+          <h2 class="card-title">Deeper guides →</h2>
           <p class="text-muted">Downloads-folder cleanup, photo organization, duplicate identification and more.</p>
         </a>
       </div>

@@ -46,29 +46,30 @@ function seoFiles() {
       const outDir = resolve(__dirname, 'dist');
       if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
-      const pages: Array<[string, string, string]> = [
-        // path, changefreq, priority
-        ['index.html', 'weekly', '1.0'],
-        ['organizer.html', 'weekly', '0.9'],
-        ['features.html', 'monthly', '0.7'],
-        ['guide.html', 'monthly', '0.7'],
-        ['guides/', 'weekly', '0.8'],
-        ['guides/how-to-organize-files-by-type.html', 'monthly', '0.6'],
-        ['guides/how-to-clean-up-downloads-folder.html', 'monthly', '0.6'],
-        ['guides/how-to-organize-photos-and-documents.html', 'monthly', '0.6'],
-        ['guides/how-to-identify-duplicate-files.html', 'monthly', '0.6'],
-        ['guides/browser-file-organization-limits.html', 'monthly', '0.6'],
-        ['about.html', 'monthly', '0.5'],
-        ['privacy.html', 'monthly', '0.5'],
+      const pages: Array<[string, string, string, string]> = [
+        // path, changefreq, priority, last meaningful content update
+        ['', 'weekly', '1.0', '2026-10-20'],
+        ['organizer.html', 'weekly', '0.9', '2026-10-20'],
+        ['features.html', 'monthly', '0.7', '2026-10-20'],
+        ['guide.html', 'monthly', '0.7', '2026-10-20'],
+        ['guides/', 'weekly', '0.8', '2026-10-20'],
+        ['guides/how-to-organize-files-by-type.html', 'monthly', '0.6', '2026-10-20'],
+        ['guides/how-to-clean-up-downloads-folder.html', 'monthly', '0.6', '2026-10-20'],
+        ['guides/how-to-organize-photos-and-documents.html', 'monthly', '0.6', '2026-10-20'],
+        ['guides/how-to-identify-duplicate-files.html', 'monthly', '0.6', '2026-10-20'],
+        ['guides/browser-file-organization-limits.html', 'monthly', '0.6', '2026-10-20'],
+        ['about.html', 'monthly', '0.5', '2026-10-20'],
+        ['privacy.html', 'monthly', '0.5', '2026-10-20'],
+        ['contact.html', 'monthly', '0.4', '2026-10-20'],
+        ['terms.html', 'monthly', '0.4', '2026-10-20'],
       ];
-      const today = new Date().toISOString().slice(0, 10);
       const base = CANONICAL_BASE;
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${pages
   .map(
-    ([p, freq, pri]: [string, string, string]) =>
-      `  <url><loc>${base}${p}</loc><changefreq>${freq}</changefreq><priority>${pri}</priority><lastmod>${today}</lastmod></url>`,
+    ([p, freq, pri, lastmod]: [string, string, string, string]) =>
+      `  <url><loc>${base}${p}</loc><changefreq>${freq}</changefreq><priority>${pri}</priority><lastmod>${lastmod}</lastmod></url>`,
   )
   .join('\n')}
 </urlset>
@@ -88,6 +89,8 @@ const pages = [
   'organizer.html',
   'features.html',
   'privacy.html',
+  'contact.html',
+  'terms.html',
   'guide.html',
   'about.html',
   'guides/index.html',

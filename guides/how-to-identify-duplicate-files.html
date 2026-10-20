@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How to identify duplicate files safely — AuraFlow Web guide</title>
-  <meta name="description" content="True duplicates share content, not names. How size pre-filtering plus SHA-256 hashing finds real copies safely — and why name-only tools flood you with false positives." />
+  <title>How to Identify Duplicate Files Safely — AuraFlow Guide</title>
+  <meta name="description" content="True duplicates share content, not names. How size filtering plus SHA-256 hashing finds real copies safely — and why name-only tools create false positives." />
   <link rel="canonical" href="__BASE_URL__/guides/how-to-identify-duplicate-files.html" />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="How to identify duplicate files" />
+  <meta property="og:title" content="How to Identify Duplicate Files" />
   <meta property="og:description" content="Content, not names: the right way to find true duplicate files." />
   <meta property="og:url" content="__BASE_URL__/guides/how-to-identify-duplicate-files.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
@@ -17,10 +17,13 @@
   {
     "@context": "https://schema.org",
     "@type": "Article",
+    "image": "__BASE_URL__/og-cover.png",
     "headline": "How to identify duplicate files safely",
     "author": { "@type": "Person", "name": "Suzain", "url": "https://github.com/heyitssuzain" },
-    "publisher": { "@type": "Organization", "name": "AuraFlow Web" },
+    "publisher": { "@type": "Organization", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "datePublished": "2026-10-19",
+    "dateModified": "2026-10-20",
     "mainEntityOfPage": "__BASE_URL__/guides/how-to-identify-duplicate-files.html"
   }
   </script>
@@ -32,7 +35,7 @@
     <div class="container">
       <nav aria-label="Breadcrumb" class="crumbs">
         <ol>
-          <li><a href="../index.html">Home</a></li>
+          <li><a href="../">Home</a></li>
           <li><a href="/guides/">Guides</a></li>
           <li aria-current="page">Duplicate files</li>
         </ol>
@@ -40,7 +43,7 @@
 
       <article class="article">
         <h1>How to identify duplicate files — safely</h1>
-        <span class="date">Updated October 2026 · 5 min read</span>
+        <span class="date">By Suzain · Updated October 2026 · 5 min read</span>
 
         <p class="lede">Two files with the same name are usually not duplicates; two files with different names very often are. If that sentence does not immediately make sense, do not run a deduplication tool yet — a wrong dedupe deletes a file you wanted. Here's the thinking, and a safe procedure.</p>
 
