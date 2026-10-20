@@ -1,9 +1,8 @@
 # AuraFlow Web — robots.txt
-# Public marketing & tool pages are crawlable; app-side internal states are not indexed
-# because everything renderable is a public page. Organizer page is listed but its content
-# is a tool (noindex asserted via meta tag there).
+# Public marketing pages, guides, and the organizer tool page are crawlable.
+# The 404 page is excluded via a noindex meta tag.
 
 User-agent: *
 Allow: /
 
-Sitemap: __BASE_URL__/sitemap.xml
+Sitemap: https://online-file-organizer.vercel.app/sitemap.xml
