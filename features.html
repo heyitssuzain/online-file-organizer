@@ -127,6 +127,7 @@
           <h2 class="card-title">Known limits (stated plainly)</h2>
           <ul class="text-muted text-sm" style="margin:0; padding-left:1.1rem; display:grid; gap:6px">
             <li>A web page sees last-modified dates and sizes — not true creation dates or camera metadata</li>
+            <li>Chromium refuses whole-folder picks for Downloads/Documents. Choose the files inside (or a subfolder) instead; individually picked files can be moved, but cannot be undone because their parent folder is never exposed</li>
             <li>Recursive depth is capped at 3 levels when reading with folder permission</li>
             <li>Organized ZIPs are stored (uncompressed) and capped at 2 GB of selected files</li>
             <li>Undo history lives in the tab; closing the page ends it (the manifest survives)</li>

@@ -9,8 +9,9 @@
  * Move semantics (and their limits):
  *  1. The browser writes a full copy of the file into the destination.
  *  2. The destination is read back and its size is verified.
- *  3. Only then is the original removed — and only if a source handle and its
- *     parent directory handle were captured during the scan.
+ *  3. Only then is the original removed — through its parent directory handle,
+ *     or (for individually picked files) through the file handle's own
+ *     remove() method in current Chromium.
  *
  * If any step fails, the original is left untouched. Browsers whose
  * FileSystemFileHandle.move() only works in the origin-private filesystem fall
@@ -18,6 +19,7 @@
  * run is reported honestly as a copy, never as a move.
  */
 
+import { verifyPermission } from './access.js';
 import type { DirHandle } from './access.js';
 import { createManifest, Manifest, MoveRecord, SkipRecord, ErrorRecord } from '../core/manifest.js';
 import type { Plan, PlanEntry } from '../core/plan.js';
@@ -82,6 +84,10 @@ type WritableFormat = {
 
 type MovableFileHandle = FileSystemFileHandle & {
   move?: (dest: FileSystemDirectoryHandle, name?: string) => Promise<void>;
+};
+
+type RemovableFileHandle = FileSystemFileHandle & {
+  remove?: () => Promise<void>;
 };
 
 export async function executePlan(
@@ -205,7 +211,10 @@ async function executeOne(
     return;
   }
 
-  if (!source?.handle || !source.parent?.removeEntry) {
+  const removable = source?.handle as RemovableFileHandle | undefined;
+  const parentCanRemove = !!source?.parent?.removeEntry;
+  const handleCanRemove = typeof removable?.remove === 'function';
+  if (!source?.handle || (!parentCanRemove && !handleCanRemove)) {
     manifest.moves.push({ ...baseRecord, note: 'copied — original kept (source folder cannot be modified)' });
     return;
   }
@@ -229,10 +238,42 @@ async function executeOne(
     return;
   }
 
+  if (!parentCanRemove) {
+    // Individually picked files (showOpenFilePicker) have no parent handle.
+    // Current Chromium can remove the file through its own handle instead.
+    try {
+      if (!(await verifyPermission(source.handle, 'readwrite'))) {
+        throw new Error('write permission for the original file was denied');
+      }
+      await removable!.remove!();
+      // Confirm it is really gone before claiming a move.
+      try {
+        await source.handle.getFile();
+        throw new Error('source still exists after removal');
+      } catch (err) {
+        if (errName(err) !== 'NotFoundError') throw err;
+      }
+    } catch (err) {
+      manifest.moves.push({
+        ...baseRecord,
+        note: `copied — original kept (could not remove source: ${msg(err)})`,
+      });
+      return;
+    }
+
+    // No undo record: the browser never exposed the original folder, so there
+    // is nowhere safe to restore the file to later.
+    manifest.moves.push({
+      ...baseRecord,
+      note: 'moved — undo unavailable for individually picked files',
+    });
+    return;
+  }
+
   try {
     // The name may now belong to a different file (renamed/recreated after the
     // scan). Only remove it when it is still the exact entry we copied.
-    const currentHandle = await source.parent.getFileHandle(source.handle.name);
+    const currentHandle = await source.parent!.getFileHandle(source.handle.name);
     if (
       currentHandle.isSameEntry &&
       !(await currentHandle.isSameEntry(source.handle).catch(() => false))
@@ -240,9 +281,9 @@ async function executeOne(
       throw new Error('source entry changed after the scan');
     }
 
-    await source.parent.removeEntry(source.handle.name);
+    await source.parent!.removeEntry!(source.handle.name);
     // Confirm the entry is really gone before claiming a move.
-    if (await entryExists(source.parent, source.handle.name)) {
+    if (await entryExists(source.parent!, source.handle.name)) {
       throw new Error('source still exists after removal');
     }
   } catch (err) {

@@ -41,6 +41,25 @@
 }
 .dropzone.drag-on svg { color: var(--accent); }
 
+/* Browser-blocked folder guidance */
+.source-note[hidden] { display: none; }
+.source-note {
+  display: grid;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  margin: 0 0 var(--s-4);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: var(--r-lg);
+  background: rgba(245, 158, 11, 0.06);
+}
+.source-note strong { color: var(--accent-warm); }
+.source-note p { margin: var(--s-1) 0 0; }
+.source-note-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
 /* Workspace */
 .app-grid {
   display: grid;
@@ -190,6 +209,18 @@
 /* Execute */
 #executePanel { margin-top: var(--s-4); }
 .exec-progress { margin-top: var(--s-4); }
+.exec-mode {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3);
+  margin: 0 0 var(--s-2);
+}
+.exec-mode .segmented button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+#modeNote { margin: 0 0 var(--s-3); }
 
 /* Results table */
 .results-summary {

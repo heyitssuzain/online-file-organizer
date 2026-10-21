@@ -32,6 +32,10 @@ export interface Capabilities {
   directWrite: boolean;
   /** Can we remove verified source files (true move, not just copy)? */
   directMove: boolean;
+  /** Can a picked file handle remove itself (move for individually picked files)? */
+  fileRemoval: boolean;
+  /** Can the browser open a multi-file picker that returns handles? */
+  filePicker: boolean;
   /** Drag and drop of real folders. */
   folderDrop: boolean;
   /** Directory picker via <input webkitdirectory> fallback. */
@@ -45,6 +49,8 @@ export function capabilities(): Capabilities {
   return {
     directWrite: picker && writable,
     directMove: picker && writable && removable,
+    fileRemoval: supportsFileRemoval(),
+    filePicker: supportsFilePicker(),
     folderDrop: picker,
     directoryInput: true,
   };
@@ -65,33 +71,113 @@ function supportsDirectoryRemoval(): boolean {
   return !!G.FileSystemDirectoryHandle?.prototype && 'removeEntry' in G.FileSystemDirectoryHandle.prototype;
 }
 
+/** Newer Chromium builds can remove a file directly from its own handle. */
+export function supportsFileRemoval(): boolean {
+  const G = globalThis as unknown as { FileSystemFileHandle?: { prototype?: object } };
+  return !!G.FileSystemFileHandle?.prototype && 'remove' in G.FileSystemFileHandle.prototype;
+}
+
+function supportsFilePicker(): boolean {
+  return typeof window !== 'undefined' && typeof (window as unknown as { showOpenFilePicker?: unknown }).showOpenFilePicker === 'function';
+}
+
 /**
  * Check (and, when needed, request) read/write permission for a picked folder.
  * Must be called from a user gesture for `requestPermission` to prompt.
  */
-export async function verifyPermission(dir: DirHandle, mode: 'read' | 'readwrite' = 'readwrite'): Promise<boolean> {
-  if (!dir.queryPermission || !dir.requestPermission) return true;
+export async function verifyPermission(handle: unknown, mode: 'read' | 'readwrite' = 'readwrite'): Promise<boolean> {
+  const h = handle as {
+    queryPermission?: (opts?: { mode?: 'read' | 'readwrite' }) => Promise<PermissionState>;
+    requestPermission?: (opts?: { mode?: 'read' | 'readwrite' }) => Promise<PermissionState>;
+  };
+  if (typeof h.queryPermission !== 'function' || typeof h.requestPermission !== 'function') return true;
   const opts = { mode };
   try {
-    if ((await dir.queryPermission(opts)) === 'granted') return true;
-    return (await dir.requestPermission(opts)) === 'granted';
+    if ((await h.queryPermission(opts)) === 'granted') return true;
+    return (await h.requestPermission(opts)) === 'granted';
   } catch {
     return false;
   }
 }
 
 
-/** Pick a real folder with read/write permission (Chromium). Returns null if declined/unavailable. */
-export async function pickDirectory(): Promise<DirHandle | null> {
-  if (!supportsFsAccess()) return null;
+export type PickDirectoryResult =
+  | { status: 'picked'; dir: DirHandle }
+  | { status: 'cancelled' }
+  /** Chromium refuses whole-folder access to Downloads/Documents and similar locations. */
+  | { status: 'blocked'; message: string }
+  | { status: 'unsupported' }
+  | { status: 'error'; message: string };
+
+/**
+ * Pick a real folder with read/write permission (Chromium), preserving *why* a
+ * pick failed. Downloads/Documents are blocked by Chromium's directory picker
+ * ("Cannot open this folder because it contains system files") — a browser
+ * security rule, not an app error. Callers can offer the file picker instead.
+ */
+export async function pickDirectoryDetailed(): Promise<PickDirectoryResult> {
+  if (!supportsFsAccess()) return { status: 'unsupported' };
   try {
     const picker = (window as unknown as {
       showDirectoryPicker: (o?: { mode?: string; id?: string }) => Promise<DirHandle>;
     }).showDirectoryPicker;
-    return await picker({ mode: 'readwrite', id: 'auraflow' });
-  } catch {
-    return null; // user cancelled or denied
+    return { status: 'picked', dir: await picker({ mode: 'readwrite', id: 'auraflow' }) };
+  } catch (err) {
+    const message = errMessage(err);
+    if (errName(err) === 'AbortError') return { status: 'cancelled' };
+    if (isBlockedPickerError(err)) return { status: 'blocked', message };
+    return { status: 'error', message };
   }
+}
+
+/** Backwards-compatible wrapper: null means cancelled, blocked or unsupported. */
+export async function pickDirectory(): Promise<DirHandle | null> {
+  const result = await pickDirectoryDetailed();
+  return result.status === 'picked' ? result.dir : null;
+}
+
+export type PickFilesResult =
+  | { status: 'picked'; handles: FileSystemFileHandle[] }
+  | { status: 'cancelled' }
+  | { status: 'unsupported' }
+  | { status: 'error'; message: string };
+
+/**
+ * Pick individual files and keep their handles. This is the Downloads
+ * workaround: Chromium refuses folder access to Downloads, but the multi-file
+ * picker can grant access to the files inside it (Ctrl+A selects them all).
+ * File handles can then be removed after a verified copy in current Chromium.
+ */
+export async function pickFileHandles(startIn?: 'downloads' | 'documents' | 'desktop' | 'pictures'): Promise<PickFilesResult> {
+  const picker = (window as unknown as {
+    showOpenFilePicker?: (o?: {
+      multiple?: boolean;
+      id?: string;
+      startIn?: string;
+    }) => Promise<FileSystemFileHandle[]>;
+  }).showOpenFilePicker;
+  if (typeof picker !== 'function') return { status: 'unsupported' };
+
+  try {
+    const handles = await picker({
+      multiple: true,
+      id: 'auraflow-files',
+      ...(startIn ? { startIn } : {}),
+    });
+    return { status: 'picked', handles };
+  } catch (err) {
+    if (errName(err) === 'AbortError') return { status: 'cancelled' };
+    return { status: 'error', message: errMessage(err) };
+  }
+}
+
+function isBlockedPickerError(err: unknown): boolean {
+  const name = errName(err);
+  const message = errMessage(err);
+  return (
+    name === 'SecurityError' ||
+    /system files|sensitive|well-known|blocked|not allowed/i.test(message)
+  );
 }
 
 /** Collect existing filenames per first-level subfolder (collision safety). */
@@ -190,6 +276,7 @@ export async function readDirectoryHandle(
     warnings: [],
   };
   const skippedFolders: string[] = [];
+  let skippedSystemFolders = 0;
   let stopped = false;
 
   async function walk(handle: DirHandle, rel: string, depth: number): Promise<void> {
@@ -220,6 +307,10 @@ export async function readDirectoryHandle(
           }
         } else if (depth === 0 && skipOrganized && isOrganizedDestinationFolder(entry.name)) {
           skippedFolders.push(entry.name);
+        } else if (depth === 0 && ROOT_SYSTEM_FOLDERS.has(entry.name)) {
+          // Drive roots can contain OS-owned folders that are unreadable or huge.
+          // Skipping them never hides a normal user folder at the selected root.
+          skippedSystemFolders++;
         } else if (depth < maxDepth) {
           await walk(entry as DirHandle, rel ? `${rel}/${entry.name}` : entry.name, depth + 1);
         }
@@ -235,8 +326,21 @@ export async function readDirectoryHandle(
       `Skipped ${skippedFolders.length} existing organized folder${skippedFolders.length === 1 ? '' : 's'} (${skippedFolders.slice(0, 4).join(', ')}${skippedFolders.length > 4 ? '…' : ''}).`,
     );
   }
+  if (skippedSystemFolders) {
+    result.warnings.push(
+      `Skipped ${skippedSystemFolders} OS-owned system folder${skippedSystemFolders === 1 ? '' : 's'} that cannot be organized safely.`,
+    );
+  }
   return result;
 }
+
+/** OS-owned folders sometimes found at the root of a drive. */
+const ROOT_SYSTEM_FOLDERS = new Set([
+  '$RECYCLE.BIN',
+  'System Volume Information',
+  '$WinREAgent',
+  'Config.Msi',
+]);
 
 /** Practical cap so a huge tree can't freeze the tab. */
 export const MAX_FILES = 5000;
@@ -282,6 +386,42 @@ export function readFromInput(files: FileList | File[]): ReadRecursiveResult {
 }
 
 /**
+ * Read files picked with showOpenFilePicker(). Unlike <input>, this path keeps
+ * a FileSystemFileHandle per file, so current Chromium can remove the original
+ * after a verified copy (true move) even though the parent folder was never
+ * exposed. There is no parent handle, so these moves cannot be undone.
+ */
+export async function readFromFileHandles(handles: readonly FileSystemFileHandle[]): Promise<ReadRecursiveResult> {
+  const files: File[] = [];
+  const paths = new Map<File, string>();
+  const keptHandles = new Map<File, FileSystemFileHandle>();
+  const warnings: string[] = [];
+  const capped = handles.slice(0, MAX_FILES);
+
+  for (const handle of capped) {
+    try {
+      const file = await handle.getFile();
+      files.push(file);
+      paths.set(file, file.name);
+      keptHandles.set(file, handle);
+    } catch (err) {
+      warnings.push(`Could not read "${handle.name}" (${errMessage(err)}).`);
+    }
+  }
+  if (handles.length > MAX_FILES) {
+    warnings.push(`Selection limited to the first ${MAX_FILES} files (found ${handles.length}).`);
+  }
+
+  return {
+    files,
+    paths,
+    handles: keptHandles,
+    parents: new Map(),
+    warnings,
+  };
+}
+
+/**
  * Drag-and-drop: DataTransfer items may carry a FileSystemDirectoryHandle
  * (Chromium). Plain file drops work everywhere.
  */
@@ -301,34 +441,49 @@ export async function readFromDrop(dt: DragEvent, maxDepth = 3): Promise<ReadRec
     const anyItem = item as DataTransferItem & {
       getAsFileSystemHandle?: () => Promise<FileSystemHandle | null>;
     };
-    if (anyItem.getAsFileSystemHandle) {
-      const handle = await anyItem.getAsFileSystemHandle();
-      if (handle?.kind === 'file') {
-        const fh = handle as FileSystemFileHandle;
-        const file = await fh.getFile();
-        files.push(file);
-        paths.set(file, file.name);
-        handles.set(file, fh);
-      } else if (handle?.kind === 'directory') {
-        directoryCount++;
-        const dirHandle = handle as unknown as DirHandle;
-        const res = await readDirectoryHandle(dirHandle, { maxDepth });
-        files.push(...res.files);
-        for (const [f, p] of res.paths) paths.set(f, p);
-        for (const [f, h] of res.handles) handles.set(f, h);
-        for (const [f, d] of res.parents) parents.set(f, d);
-        warnings.push(...res.warnings);
-        if (directoryCount === 1) root = dirHandle;
+    try {
+      if (anyItem.getAsFileSystemHandle) {
+        const handle = await anyItem.getAsFileSystemHandle();
+        if (handle?.kind === 'file') {
+          const fh = handle as FileSystemFileHandle;
+          const file = await fh.getFile();
+          files.push(file);
+          paths.set(file, file.name);
+          handles.set(file, fh);
+        } else if (handle?.kind === 'directory') {
+          directoryCount++;
+          const dirHandle = handle as unknown as DirHandle;
+          const res = await readDirectoryHandle(dirHandle, { maxDepth });
+          files.push(...res.files);
+          for (const [f, p] of res.paths) paths.set(f, p);
+          for (const [f, h] of res.handles) handles.set(f, h);
+          for (const [f, d] of res.parents) parents.set(f, d);
+          warnings.push(...res.warnings);
+          if (directoryCount === 1) root = dirHandle;
+        }
+      } else {
+        const f = item.getAsFile?.();
+        if (f) {
+          files.push(f);
+          paths.set(f, f.name);
+        }
       }
-    } else {
-      const f = item.getAsFile?.();
-      if (f) {
-        files.push(f);
-        paths.set(f, f.name);
-      }
+    } catch (err) {
+      warnings.push(
+        `Could not open a dropped item (${errMessage(err)}). Chromium blocks whole-folder access to Downloads/Documents; drop files or a subfolder instead.`,
+      );
     }
   }
-  return files.length
+
+  // If handle access failed, the plain File API may still let us copy the data.
+  if (!files.length && dt.dataTransfer?.files?.length) {
+    for (const f of [...dt.dataTransfer.files]) {
+      files.push(f);
+      paths.set(f, f.name);
+    }
+  }
+
+  return files.length || warnings.length
     ? { files, paths, handles, parents, warnings, root: directoryCount === 1 ? root : undefined }
     : null;
 }
@@ -344,4 +499,12 @@ export function pickFiles(input: HTMLInputElement): Promise<FileList | null> {
     input.addEventListener('change', onChange);
     input.click();
   });
+}
+
+function errName(err: unknown): string {
+  return typeof err === 'object' && err !== null && 'name' in err ? String((err as { name: unknown }).name) : '';
+}
+
+function errMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }

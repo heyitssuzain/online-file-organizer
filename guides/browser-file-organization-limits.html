@@ -50,7 +50,7 @@
         <h2>What browsers let a web page do (with your consent)</h2>
         <ul>
           <li><strong>Read files you pick.</strong> Every modern browser implements the File API. A picker or drag-and-drop grants the page read access to just those files — nothing more, nothing else.</li>
-          <li><strong>Read whole folders.</strong> Directory inputs (and, in Chromium, the directory picker) reveal a folder tree, recursively, with permission. This is how an organizer shows a real preview of hundreds of files it has never seen.</li>
+          <li><strong>Read whole folders.</strong> Directory inputs (and, in Chromium, the directory picker) reveal a folder tree, recursively, with permission. This is how an organizer shows a real preview of hundreds of files it has never seen. Chromium makes an exception for sensitive roots such as Downloads and Documents: the folder picker refuses them with a "system files" message, even though choosing individual files inside those folders still works.</li>
           <li><strong>Write into a folder you grant.</strong> The File System Access API (Chrome 86+, Edge, Opera, Brave) lets a page create subfolders and move/copy files <em>after</em> your browser shows its own permission prompt. The page cannot expand its reach — it writes into the folder you picked, and nothing beyond it.</li>
           <li><strong>Compute over contents.</strong> Hashing files to find duplicates, parsing CSVs, etc. — all in-page computation, often in Web Workers, limited only by your device.</li>
           <li><strong>Deliver output as downloads.</strong> ZIPs, manifests, reports — produced in memory and handed to your Downloads folder, where you decide what happens next.</li>

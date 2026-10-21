@@ -232,6 +232,34 @@ The bundled Playwright Chromium headless shell was incomplete on this machine (`
    - results say **moved**
 4. Click **Undo this run** and verify the files return to their original paths.
 5. Run the same folder again and confirm the app does **not** rescan its own category/date folders.
-6. Choose a folder, tick **Copy instead of move**, choose a destination, and verify originals stay and results say **copied (originals kept)**.
+6. Choose a folder, select **Copy files**, choose a destination, and verify originals stay and results say **copied (originals kept)**.
 7. Try an existing destination filename and verify a `_1` name is produced without overwriting.
 8. Test in Firefox/Safari: verify the badge offers the ZIP, results say **exported (originals kept)**, and the toast says originals are untouched.
+
+---
+
+## 7. Move/Copy and Downloads-folder fix (October 2026)
+
+### Reported problem
+- The Move option could not be used when a folder was selected through the classic picker, so users only got Copy.
+- Choosing Downloads in Chrome/Edge failed with "Cannot open this folder because it contains system files".
+
+### What changed
+- Replaced the single "copy instead of move" checkbox with explicit **Move files** / **Copy files** segmented buttons. Move is disabled only when the selection has no removable handle, and the reason is shown in the UI.
+- Added a dedicated browser-block notice for Downloads/Documents with three paths: select files instead, try a subfolder, or continue copy-only.
+- `Select files` now uses `showOpenFilePicker()` on Chromium, preserving a handle per file. Current Chromium can remove that original through `FileSystemFileHandle.remove()` after the verified copy, so individually picked Downloads files can be truly moved.
+- `showOpenFilePicker({ startIn: 'downloads' })` is used from the blocked-folder notice, so Ctrl+A can select every file in Downloads.
+- Moves through a parent directory handle still record undo. Moves through an individual file handle cannot be undone because the browser never exposes the parent folder; the result screen and manifest say so.
+- Added graceful handling for blocked drag-and-drop folders and OS-owned root folders such as `$RECYCLE.BIN` and `System Volume Information`.
+- Updated the Downloads cleanup guide, browser-limits guide and compatibility table with the real browser rule.
+
+### Verification
+- `npm run typecheck` - passed
+- `npm test` - 67/67 passed
+- `npm run build` - passed
+- `node scripts/smoke.mjs` - 38/38 passed
+- Browser probe: blocked folder notice appears; file-picker Move removes the originals and writes category folders; Copy keeps the originals; parent-folder Move keeps Undo; no console errors.
+
+### Honest limitation
+A web page still cannot open the Downloads/Documents root as a whole folder in Chromium. The working paths are the file picker (individually selected files) or a subfolder/drag-and-drop. This is a browser security rule, not an app bug; the desktop app can do whole-folder moves because it is native.
+

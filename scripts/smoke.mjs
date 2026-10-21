@@ -200,6 +200,11 @@ const url = (p) => `${BASE}${p}`;
   const writeVisible = await page.locator('#execWrite').isVisible().catch(() => false);
   const zipVisible = await page.locator('#execZip').isVisible().catch(() => false);
   record('confirmation step offers a write or ZIP path before any move', writeVisible || zipVisible);
+  if (writeVisible) {
+    const moveDisabled = await page.locator('#modeSeg button[data-mode="move"]').isDisabled();
+    const copySelected = await page.locator('#modeSeg button[data-mode="copy"]').getAttribute('aria-pressed');
+    record('classic file-input selection is honestly copy-only (no removable handles)', moveDisabled && copySelected === 'true');
+  }
 
   if (zipVisible) {
     const [zip, ] = await Promise.all([

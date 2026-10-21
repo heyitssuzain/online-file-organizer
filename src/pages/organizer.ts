@@ -26,9 +26,11 @@ import { forEachChunk, groupByHash } from '../core/hash.js';
 import { Sha256 } from '../core/sha256.js';
 import {
   capabilities,
-  pickDirectory,
+  pickDirectoryDetailed,
+  pickFileHandles,
   readDirectoryHandle,
   readFromDrop,
+  readFromFileHandles,
   readFromInput,
   snapshotDestinations,
   verifyPermission,
@@ -57,6 +59,7 @@ const session = new OpSession();
 let hashJobId = 0;
 let planVersion = 0;
 let hasExecuted = false;
+let execMode: ExecMode = 'move';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const all = <T extends HTMLElement>(selector: string) => [...document.querySelectorAll(selector)] as T[];
@@ -84,19 +87,79 @@ function escapeHtml(s: string): string {
 }
 
 // ---------- selection --------------------------------------------------------
-$('btnFolder').addEventListener('click', async () => {
+async function chooseFolder(): Promise<void> {
   if (capabilities().directWrite) {
-    const dir = await pickDirectory();
-    if (dir) {
-      toast(`Reading "${dir.name}" …`, 'ok');
-      const res = await readDirectoryHandle(dir, {
-        onProgress: (n) => ($('appHeadStatus').textContent = `Reading ${n} files…`),
-      });
-      remember(res, dir.name, dir);
+    const picked = await pickDirectoryDetailed();
+    if (picked.status === 'picked') {
+      hideSourceNotice();
+      await loadDirectory(picked.dir);
       return;
     }
-    toast('Folder access was cancelled — falling back to the classic picker', '');
+    if (picked.status === 'cancelled') return;
+    if (picked.status === 'blocked') {
+      showSourceNotice();
+      return;
+    }
+    if (picked.status === 'unsupported') {
+      $('dirInput').click();
+      return;
+    }
+    toast(`Could not open that folder: ${picked.message}`, 'err');
+    return;
   }
+  $('dirInput').click();
+}
+
+async function loadDirectory(dir: DirHandle): Promise<void> {
+  toast(`Reading "${dir.name}" …`, 'ok');
+  const res = await readDirectoryHandle(dir, {
+    onProgress: (n) => ($('appHeadStatus').textContent = `Reading ${n} files…`),
+  });
+  remember(res, dir.name, dir);
+}
+
+async function chooseFiles(startIn?: 'downloads'): Promise<void> {
+  if (capabilities().filePicker) {
+    const picked = await pickFileHandles(startIn);
+    if (picked.status === 'picked') {
+      if (!picked.handles.length) {
+        toast('No files were selected', '');
+        return;
+      }
+      hideSourceNotice();
+      const res = await readFromFileHandles(picked.handles);
+      const count = res.files.length;
+      remember(res, count === 1 ? res.files[0]!.name : `${count} selected files`, null);
+      return;
+    }
+    if (picked.status === 'cancelled') return;
+    if (picked.status === 'error') {
+      toast(`Could not open the file picker: ${picked.message}`, 'err');
+      return;
+    }
+    // 'unsupported' falls through to the classic <input multiple> picker.
+  }
+  $('fileInput').click();
+}
+
+function showSourceNotice(): void {
+  $('sourceNotice').hidden = false;
+  $('appHeadStatus').textContent =
+    'Chrome blocked whole-folder access. Use Select files for Downloads, or drag a subfolder here — that keeps Move available.';
+  $('sourceNotice').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function hideSourceNotice(): void {
+  $('sourceNotice').hidden = true;
+}
+
+$('btnFolder').addEventListener('click', () => void chooseFolder());
+$('btnPickFilesInstead').addEventListener('click', () => void chooseFiles('downloads'));
+$('btnRetryFolder').addEventListener('click', () => void chooseFolder());
+$('btnCopyFolder').addEventListener('click', () => {
+  hideSourceNotice();
+  $('appHeadStatus').textContent =
+    'Using the classic folder picker: AuraFlow can read and copy this folder, but the browser will not let it remove the originals.';
   $('dirInput').click();
 });
 
@@ -112,7 +175,7 @@ $('dirInput').addEventListener('change', () => {
   if (input.files?.length) useInputFiles(input.files, true);
   input.value = '';
 });
-$('btnFiles').addEventListener('click', () => $('fileInput').click());
+$('btnFiles').addEventListener('click', () => void chooseFiles());
 
 function useInputFiles(list: FileList, isFolder: boolean): void {
   const files = [...list];
@@ -143,15 +206,19 @@ for (const ev of ['dragleave', 'drop'] as const) {
 dz.addEventListener('drop', async (e) => {
   e.preventDefault();
   const drag = e as DragEvent;
-  const res = await readFromDrop(drag);
-  if (res) {
-    const rootName = res.root?.name ?? (res.files.length === 1 ? res.files[0]!.name : 'dropped files');
-    remember(res, rootName, res.root ?? null);
-  } else if (drag.dataTransfer?.files?.length) {
-    const files = [...drag.dataTransfer.files];
-    remember(readFromInput(files), files.length === 1 ? files[0]!.name : 'dropped files', null);
-  } else {
-    toast('Nothing readable was dropped — try files or a folder', 'err');
+  try {
+    const res = await readFromDrop(drag);
+    if (res) {
+      const rootName = res.root?.name ?? (res.files.length === 1 ? res.files[0]!.name : 'dropped files');
+      remember(res, rootName, res.root ?? null);
+    } else if (drag.dataTransfer?.files?.length) {
+      const files = [...drag.dataTransfer.files];
+      remember(readFromInput(files), files.length === 1 ? files[0]!.name : 'dropped files', null);
+    } else {
+      toast('Nothing readable was dropped — try files or a subfolder', 'err');
+    }
+  } catch (err) {
+    toast(err instanceof Error ? err.message : 'Could not read the dropped item', 'err');
   }
 });
 
@@ -168,6 +235,7 @@ function sourcesFrom(res: ReadRecursiveResult): SourceMap {
 }
 
 function remember(res: ReadRecursiveResult, rootName: string, dir: DirHandle | null): void {
+  hideSourceNotice();
   sel = { files: [...res.files], rootName, dirHandle: dir, sources: sourcesFrom(res) };
   manifest = null;
   undoLog = [];
@@ -175,6 +243,7 @@ function remember(res: ReadRecursiveResult, rootName: string, dir: DirHandle | n
   lastSourceHandle = null;
   hasExecuted = false;
   resetResults();
+  $('executePanel').hidden = true;
 
   const hasFiles = res.files.length > 0;
   $('workspace').hidden = !hasFiles;
@@ -203,9 +272,11 @@ $('btnClear').addEventListener('click', () => {
   lastSourceHandle = null;
   hasExecuted = false;
   $('workspace').hidden = true;
+  $('executePanel').hidden = true;
   $('countBadge').textContent = '0';
   resetResults();
   $('dupesOut').hidden = true;
+  hideSourceNotice();
   $('appHeadStatus').textContent = 'Pick files or a folder to begin — everything stays on your device.';
 });
 
@@ -474,10 +545,7 @@ $('btnExecute').addEventListener('click', () => {
     $('execWrite').hidden = false;
     $('execZip').hidden = true;
 
-    const keep = $('optKeepOriginals') as HTMLInputElement;
-    const canMove = !!sel.dirHandle && capabilities().directMove;
-    keep.disabled = !canMove;
-    keep.checked = !canMove; // move is impossible without a source handle
+    setExecMode(canMoveSelection() ? 'move' : 'copy');
     const sortBtn = $('btnSortHere') as HTMLElement;
     sortBtn.hidden = !sel.dirHandle;
     sortBtn.style.display = sel.dirHandle ? '' : 'none';
@@ -489,27 +557,84 @@ $('btnExecute').addEventListener('click', () => {
   $('executePanel').hidden = false;
 });
 
-$('optKeepOriginals').addEventListener('change', updateExecDescription);
+$('modeSeg').addEventListener('click', (e) => {
+  const btn = (e.target as HTMLElement).closest('button[data-mode]') as HTMLButtonElement | null;
+  if (!btn || btn.disabled) return;
+  setExecMode(btn.dataset.mode as ExecMode);
+  updateExecDescription();
+});
+
+function sourceCanBeRemoved(source: SourceMeta | undefined): boolean {
+  if (!source) return false;
+  const cap = capabilities();
+  if (source.parent?.removeEntry) return cap.directMove;
+  return (
+    cap.fileRemoval &&
+    typeof (source.handle as (FileSystemFileHandle & { remove?: () => Promise<void> }) | undefined)?.remove === 'function'
+  );
+}
+
+/** Every selected file must have a removable handle for a true move. */
+function canMoveSelection(): boolean {
+  return sel.files.length > 0 && sel.files.every((f) => sourceCanBeRemoved(sel.sources.get(f)));
+}
+
+/**
+ * For individually picked files, ask for write permission while the click's
+ * user activation is still fresh. Without this, the request after a long copy
+ * can be rejected by the browser and the move would silently become a copy.
+ */
+async function ensureSourceMovePermission(): Promise<boolean> {
+  for (const file of sel.files) {
+    const source = sel.sources.get(file);
+    if (!source?.handle || source.parent?.removeEntry) continue;
+    if (!(await verifyPermission(source.handle, 'readwrite'))) return false;
+  }
+  return true;
+}
+
+function setExecMode(mode: ExecMode): void {
+  const canMove = canMoveSelection();
+  if (mode === 'move' && !canMove) mode = 'copy';
+  execMode = mode;
+  all<HTMLButtonElement>('#modeSeg button').forEach((btn) => {
+    const isMove = btn.dataset.mode === 'move';
+    btn.disabled = isMove && !canMove;
+    btn.setAttribute('aria-pressed', String(btn.dataset.mode === mode));
+  });
+}
 
 function currentMode(): ExecMode {
-  const keep = $('optKeepOriginals') as HTMLInputElement;
-  return keep.checked || !capabilities().directMove ? 'copy' : 'move';
+  return execMode === 'move' && canMoveSelection() ? 'move' : 'copy';
 }
 
 function updateExecDescription(): void {
   const n = plan?.organizedFiles ?? 0;
   const mode = currentMode();
+  const canMove = canMoveSelection();
   const where = sel.dirHandle
     ? `inside “${sel.rootName}” or into a different folder you choose`
     : 'into a destination folder you choose';
   const safety = mode === 'move'
     ? ' A verified copy is written first; each original is removed only after that verification.'
     : ' Originals stay untouched.';
-  const why = !sel.dirHandle
-    ? ' Direct move needs a folder selected with the folder picker; for individually selected files the browser cannot remove the originals.'
+  const why = canMove
+    ? ''
+    : sel.dirHandle
+      ? ' Move is not available in this browser; choose Copy.'
+      : ' Move needs direct access to the originals. Selections made with the classic folder picker can only be copied — for Downloads, use Select files or drag files/a subfolder.';
+  const undoNote = mode === 'move' && !sel.dirHandle
+    ? ' Undo is unavailable for individually picked files because the browser does not expose their original folder.'
     : '';
   $('execWriteDesc').textContent =
-    `${n} file${n === 1 ? '' : 's'} will be ${mode === 'move' ? 'moved' : 'copied'} ${where}.${safety}${why} Nothing is overwritten — conflicts are renamed.`;
+    `${n} file${n === 1 ? '' : 's'} will be ${mode === 'move' ? 'moved' : 'copied'} ${where}.${safety}${why}${undoNote} Nothing is overwritten — conflicts are renamed.`;
+  $('modeNote').textContent = canMove
+    ? mode === 'move'
+      ? sel.dirHandle
+        ? 'Move deletes the original only after the destination copy is verified. Undo is available for this folder run.'
+        : 'Move deletes the original only after the destination copy is verified. Undo is unavailable for individually picked files because their parent folder was never exposed.'
+      : 'Copy keeps every original exactly where it is.'
+    : 'This selection is copy-only because the browser did not grant a removable handle to the originals.';
 }
 
 $('btnSortHere').addEventListener('click', async () => {
@@ -522,11 +647,24 @@ $('btnSortHere').addEventListener('click', async () => {
 });
 
 $('btnGrantWrite').addEventListener('click', async () => {
-  const dir = await pickDirectory();
-  if (!dir) {
-    toast('No destination folder was granted — nothing was changed', 'err');
+  if (currentMode() === 'move' && !(await ensureSourceMovePermission())) {
+    setExecMode('copy');
+    updateExecDescription();
+    toast('Chrome did not grant permission to remove the originals — switched to Copy. Choose Move and try again if you want to retry.', 'err');
+  }
+  const picked = await pickDirectoryDetailed();
+  if (picked.status !== 'picked') {
+    if (picked.status === 'blocked') {
+      toast(
+        'Chrome blocks Downloads/Documents as a whole-folder destination. Choose a subfolder inside it or another folder.',
+        'err',
+      );
+    } else if (picked.status !== 'cancelled') {
+      toast('No destination folder was granted — nothing was changed', 'err');
+    }
     return;
   }
+  const dir = picked.dir;
   if (!(await verifyPermission(dir, 'readwrite'))) {
     toast('Write permission was denied — originals were not touched', 'err');
     return;
@@ -567,8 +705,8 @@ $('btnCancel').addEventListener('click', () => {
 async function runExecute(target: DirHandle, mode: ExecMode, sourceRoot: DirHandle | null): Promise<void> {
   if (!plan) return;
 
-  if (mode === 'move' && (!sourceRoot || !capabilities().directMove)) {
-    toast('This browser cannot remove originals here — choose Copy, or use the ZIP export', 'err');
+  if (mode === 'move' && !canMoveSelection()) {
+    toast('This selection cannot remove originals — choose Copy, use Select files, or use the ZIP export', 'err');
     return;
   }
   if (mode === 'move') {
@@ -602,7 +740,12 @@ async function runExecute(target: DirHandle, mode: ExecMode, sourceRoot: DirHand
     lastDirHandle = target;
     lastSourceHandle = sourceRoot;
     hasExecuted = true;
-    showResults(res.manifest, undoLog.length > 0, mode);
+    const movedCount = res.manifest.moves.filter((mv) => statusOf(mv) === 'moved').length;
+    const noUndoNote =
+      mode === 'move' && movedCount > 0 && undoLog.length === 0
+        ? 'Moved. Undo is unavailable because the browser did not expose the original folder for these individually picked files.'
+        : undefined;
+    showResults(res.manifest, undoLog.length > 0, mode, noUndoNote);
 
     const moved = res.manifest.moves.filter((mv) => statusOf(mv) === 'moved').length;
     const copied = res.manifest.moves.length - moved;

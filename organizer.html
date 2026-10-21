@@ -49,7 +49,7 @@
             <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
             Select folder
           </button>
-          <button class="btn btn-secondary" type="button" id="btnFiles">
+          <button class="btn btn-secondary" type="button" id="btnFiles" title="Pick individual files — use this when Chrome blocks a whole folder such as Downloads">
             Select files
           </button>
           <input type="file" id="fileInput" multiple class="sr-only" tabindex="-1" aria-hidden="true" />
@@ -64,9 +64,30 @@
         <div class="dz-inner">
           <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
           <p><strong>Drag &amp; drop</strong> files — or a folder — anywhere on this panel</p>
-          <p class="text-sm text-muted">…or use the buttons above. Large selections are capped at 5,000 files for responsiveness.</p>
+          <p class="text-sm text-muted">…or use the buttons above. For Downloads, drop files/a subfolder here or use <strong>Select files</strong>; Chrome blocks whole-folder access to Downloads and Documents. Large selections are capped at 5,000 files.</p>
         </div>
       </section>
+
+      <!-- Browser-blocked folder guidance -->
+      <div class="source-note" id="sourceNotice" hidden role="status">
+        <div>
+          <strong>Chrome blocked whole-folder access</strong>
+          <p class="text-sm text-muted" id="sourceNoticeText">
+            Downloads, Documents and similar locations are protected by the browser. To move everything from Downloads, choose <strong>Select files</strong> and press <kbd>Ctrl</kbd>+<kbd>A</kbd> in the picker (or drag the files/a subfolder here). The classic folder picker can only copy.
+          </p>
+        </div>
+        <div class="source-note-actions">
+          <button class="btn btn-primary btn-sm" type="button" id="btnPickFilesInstead">
+            Select files instead
+          </button>
+          <button class="btn btn-secondary btn-sm" type="button" id="btnRetryFolder">
+            Try a subfolder
+          </button>
+          <button class="btn btn-ghost btn-sm" type="button" id="btnCopyFolder">
+            Continue copy-only
+          </button>
+        </div>
+      </div>
 
       <!-- Live status: what the app just did (aria-live for screen readers) -->
       <p class="text-sm text-muted" id="appHeadStatus" aria-live="polite" style="margin: 0 0 var(--s-3)">
@@ -135,10 +156,14 @@
         <div class="card" id="execWrite" hidden>
           <h3>Ready to sort into your folder</h3>
           <p class="text-muted" id="execWriteDesc"></p>
-          <label class="switch" style="margin: 0 0 var(--s-3)">
-            <input type="checkbox" id="optKeepOriginals" />
-            <span>Copy instead of move — keep the originals</span>
-          </label>
+          <div class="exec-mode">
+            <span class="text-sm" id="execModeLabel">Action</span>
+            <div class="segmented" role="group" aria-labelledby="execModeLabel" id="modeSeg">
+              <button type="button" data-mode="move" aria-pressed="true">Move files</button>
+              <button type="button" data-mode="copy" aria-pressed="false">Copy files</button>
+            </div>
+          </div>
+          <p class="text-xs text-faint" id="modeNote"></p>
           <div class="actions-row">
             <button class="btn btn-primary" type="button" id="btnSortHere" style="display:none">Sort inside this folder</button>
             <button class="btn btn-primary" type="button" id="btnGrantWrite">Choose a different folder</button>
