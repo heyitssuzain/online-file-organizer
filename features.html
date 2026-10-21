@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Features — Categories, Duplicate Scan &amp; Undo | AuraFlow</title>
-  <meta name="description" content="See how AuraFlow sorts by type, extension or date, detects duplicates with SHA-256, avoids overwrites, previews every move, and exports an undo-ready manifest." />
+  <title>File Toolkit Features — Organize, Convert &amp; Merge | AuraFlow</title>
+  <meta name="description" content="Organize folders, convert images and documents, build PDFs from images and merge PDFs locally. Formats, privacy guarantees and honest browser limits." />
   <link rel="canonical" href="__BASE_URL__/features.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="AuraFlow Features — Safe, Local File Organization" />
-  <meta property="og:description" content="Categorization, duplicate detection, conflict-safe renames, plan previews, manifests and honest browser limits." />
+  <meta property="og:title" content="AuraFlow Features — A Private Local File Toolkit" />
+  <meta property="og:description" content="Organizer, file converter, image-to-PDF builder and PDF merger — with supported formats, privacy guarantees and honest browser limits." />
   <meta property="og:url" content="__BASE_URL__/features.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="theme-color" content="#0d0e12" />
@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "AuraFlow Web Features",
-    "description": "Categorization, duplicate detection, conflict-safe renames, plan previews, manifests and honest browser limits.",
+    "description": "Local organization, file conversion, image-to-PDF creation, PDF merging, duplicate detection, conflict-safe renames, plan previews and honest browser limits.",
     "url": "__BASE_URL__/features.html",
     "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "breadcrumb": {
@@ -46,10 +46,38 @@
       <header class="section-head" style="max-width: 720px">
         <span class="eyebrow">Features</span>
         <h1 style="font-size: var(--fs-2xl)">Everything that actually works. And what doesn't.</h1>
-        <p class="text-muted">No feature lists written by the marketing department — these are the real behaviors of the organizers, verified against the code and the browsers they run in.</p>
+        <p class="text-muted">No feature lists written by the marketing department — these are the real behaviors of the organizer, converter and PDF tools, verified against the code and the browsers they run in.</p>
       </header>
 
       <div class="grid grid-2" style="margin-top: var(--s-6)">
+        <section class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M4 12h6M4 17h5"/><path d="M15 5l4 4-4 4"/><path d="M19 15v4H5"/></svg></div>
+          <h2 class="card-title">Local file converter</h2>
+          <p>Convert up to 50 files per batch, with a separate output choice for every file. Images: PNG, JPG/JPEG, WebP and BMP from PNG, JPG, WebP, BMP, GIF, SVG, AVIF and browser-decodable ICO. Text: TXT, Markdown and HTML to PDF, HTML, MD or TXT. Data: CSV, TSV and JSON to CSV, JSON or XLSX. Quality, resize and delimiter options are explicit. Download results individually or as one ZIP.</p>
+          <p class="text-sm text-muted" style="margin-bottom:0">HTML → PDF extracts readable text, not the original layout. XLSX is output-only. Text PDFs use a bundled Latin/Greek/Cyrillic font; CJK and emoji are rejected with the exact missing characters instead of producing blank glyphs.</p>
+        </section>
+
+        <section class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5"/><circle cx="17" cy="16" r="1.4"/></svg></div>
+          <h2 class="card-title">Image → PDF</h2>
+          <p>Drop images, check the previews, reorder with drag or buttons, rotate in 90° steps and remove anything you do not want. Choose A4, US Letter or the original image size, auto/portrait/landscape orientation, fit-inside or fill-page placement, a 0–30 mm margin and an optional resolution cap. Every page is built locally with pdf-lib in a Web Worker.</p>
+          <p class="text-sm text-muted" style="margin-bottom:0">Images are normalized through Canvas first, which applies EXIF orientation and avoids malformed-PNG embed failures. Pages are image-based: there is no OCR and text inside a photo is not selectable.</p>
+        </section>
+
+        <section class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><rect x="4" y="3" width="11" height="14" rx="1.5"/><rect x="9" y="7" width="11" height="14" rx="1.5"/><path d="M7 7h5M7 10h3M12 11h5M12 14h3"/></svg></div>
+          <h2 class="card-title">PDF merger</h2>
+          <p>Add PDFs by picker or drag and drop, see each filename and local page count, reorder or remove entries, then merge in the visible order. Pages are copied with pdf-lib in a Web Worker — not rasterized — so selectable text, fonts, page dimensions and vector artwork survive. One final page count and a single download.</p>
+          <p class="text-sm text-muted" style="margin-bottom:0">Encrypted or damaged PDFs are rejected with a clear message before merging. Outlines/bookmarks, AcroForm fields, embedded files and rare annotation types are not guaranteed to survive.</p>
+        </section>
+
+        <section class="card reveal">
+          <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h2 class="card-title">Private by construction</h2>
+          <p>There is no upload endpoint. Files are decoded, converted and packaged in memory in your tab; no filename, hash, queue or conversion history is written to localStorage, IndexedDB, cookies or a server. The PDF worker receives only the bytes for the current job and is terminated when you leave the page. Generated previews use temporary object URLs that are revoked.</p>
+          <p class="text-sm text-muted" style="margin-bottom:0">The only local storage key is your light/dark theme choice. There are no accounts, analytics, fingerprinting scripts or tracking cookies.</p>
+        </section>
+
         <section class="card reveal">
           <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 4h16v4H4zM4 10h7v10H4zM13 10h7v10h-7z"/></svg></div>
           <h2 class="card-title">File categorization</h2>
@@ -115,6 +143,9 @@
               <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Plan preview, manifest export</td><td>✓</td><td>✓</td><td>✓</td></tr>
               <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Duplicate content hashing</td><td>✓</td><td>✓</td><td>✓</td></tr>
               <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Organized ZIP fallback</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">File converter (images, text, data)</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Image → PDF and PDF merger</td><td>✓</td><td>✓</td><td>✓</td></tr>
+              <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Background PDF work (Web Worker)</td><td>✓</td><td>✓</td><td>✓</td></tr>
               <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Sort into a real folder + undo</td><td>✓ (with your permission)</td><td>✗ → ZIP</td><td>✗ → ZIP</td></tr>
               <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Auto-watching folders</td><td colspan="3">✗ Not possible in any browser — that requires the <a href="./about.html">desktop app</a></td></tr>
             </tbody>
@@ -132,6 +163,11 @@
             <li>Organized ZIPs are stored (uncompressed) and capped at 2 GB of selected files</li>
             <li>Undo history lives in the tab; closing the page ends it (the manifest survives)</li>
             <li>Hashing of huge media libraries (many GB) is unnecessary work — size pre-filtering keeps it fast, but a spinning-disk decade-old laptop may still take a while</li>
+            <li>HTML → PDF extracts readable text; CSS layout, columns and images are not reproduced</li>
+            <li>Text PDFs cover Latin, Greek, Cyrillic and common punctuation. CJK and emoji are rejected with a clear message, not silently blanked</li>
+            <li>PDF merging does not guarantee preservation of bookmarks/outlines, forms, embedded files or every annotation type</li>
+            <li>Image → PDF pages are images: there is no OCR and no selectable text inside photos</li>
+            <li>Converter limits are 50 files, 150 MB per file, 300 MB per batch, 50,000 data rows and 300 columns; XLSX is one-way output only</li>
           </ul>
         </section>
       </div>

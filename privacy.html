@@ -18,9 +18,9 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "AuraFlow Privacy Policy",
-    "description": "How AuraFlow handles files, hosting logs, cookies, and advertising.",
+    "description": "How AuraFlow handles local file organization, conversion, PDF creation and merging, hosting logs, cookies, and advertising.",
     "url": "__BASE_URL__/privacy.html",
-    "dateModified": "2026-10-20",
+    "dateModified": "2026-10-21",
     "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "breadcrumb": {
       "@type": "BreadcrumbList",
@@ -48,17 +48,17 @@
         <span class="eyebrow">Privacy</span>
         <h1 style="font-size: var(--fs-2xl)">What actually happens to your files</h1>
         <p class="text-muted">This page describes the real implementation, not aspirations. Each claim below maps to a specific technical fact about this site.</p>
-        <p class="text-sm text-muted">Last updated: October 20, 2026</p>
+        <p class="text-sm text-muted">Last updated: October 21, 2026</p>
       </header>
 
       <section class="card" style="margin-bottom: var(--s-4); border-color: rgba(52,211,153,0.35)">
         <h2 class="card-title">1. Files are never uploaded</h2>
-        <p class="text-muted">AuraFlow Web has no backend that could receive files. The organizing logic is JavaScript that ships with the page itself and runs inside your browser tab. Categorization, previews, duplicate hashing and manifest generation all happen on your machine. There is no network request carrying any file data — you can verify this in your browser's dev tools (Network tab) while using the app.</p>
+        <p class="text-muted">AuraFlow Web has no backend that could receive files. The organizing and conversion logic is JavaScript that ships with the page and runs inside your browser tab. Categorization, previews, duplicate hashing, image conversion, PDF creation and PDF merging all happen on your machine. There is no network request carrying file data — you can verify this in your browser's dev tools (Network tab) while using any tool.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
         <h2 class="card-title">2. Access is requested only when you act</h2>
-        <p class="text-muted">The app asks for nothing until you click <em>Select folder</em>, <em>Select files</em>, or drop files onto the panel. When you organize into a real folder (Chromium browsers), your browser shows its own permission prompt and asks for <strong>read &amp; write</strong> access to the exact folder you pick. AuraFlow only writes inside that folder, and only to category folders it creates for your confirmed plan.</p>
+        <p class="text-muted">The app asks for nothing until you click <em>Select folder</em>, <em>Select files</em>, use a tool's file picker, or drop files onto a panel. When you organize into a real folder (Chromium browsers), your browser shows its own permission prompt and asks for <strong>read &amp; write</strong> access to the exact folder you pick. AuraFlow only writes inside that folder, and only to category folders it creates for your confirmed plan. Converters and PDF tools read only the files you choose and return a download; they never write to your folders.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
@@ -74,30 +74,38 @@
         </p>
         <ul class="text-muted text-sm" style="padding-left: 1.1rem; margin-bottom: var(--s-3)">
           <li>Your light/dark theme choice (localStorage)</li>
-          <li>Organized output you download (goes to your Downloads folder — you control it)</li>
+          <li>Files and PDFs you download (they go to your Downloads folder — you control them)</li>
         </ul>
-        <p class="text-muted"><strong>Not stored anywhere:</strong> the pages' in-memory list of your selected files, plan previews, duplicate hash results, executed run manifests. Close the tab and they are gone.
+        <p class="text-muted"><strong>Not stored anywhere:</strong> selected file lists, conversion queues, image previews, page counts, merged documents, duplicate hash results, executed run manifests or conversion history. These live only in the tab's memory. Preview images use temporary <code>blob:</code> URLs that are revoked when you remove an item or leave the page. Close the tab and the in-memory copies are released.
         </p>
+        <p class="text-muted" style="margin-top: var(--s-3)">AuraFlow does not write file contents, filenames or metadata to localStorage, sessionStorage, IndexedDB or cookies. There is no service worker and no persistent file cache.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h2 class="card-title">5. Duplicate detection only reads file contents</h2>
+        <h2 class="card-title">5. Local conversion and PDF engines</h2>
+        <p class="text-muted">Images are decoded and re-encoded by the browser's own Canvas engine. Text PDFs and PDF merging use <a target="_blank" rel="noopener noreferrer" href="https://github.com/Hopding/pdf-lib">pdf-lib</a>; text PDFs also use <a target="_blank" rel="noopener noreferrer" href="https://github.com/Hopding/fontkit">fontkit</a> with a bundled Noto Sans font served from this site. XLSX files are written as a minimal local OOXML/ZIP package without a spreadsheet service. None of these libraries receives a network request containing your file data.</p>
+        <p class="text-muted" style="margin-top: var(--s-3)">Large PDF jobs run in a dedicated Web Worker. The worker receives only the bytes needed for that job, returns the result to the tab, and is terminated when you leave the page. It has no storage access and makes no network requests. PDFs are treated strictly as data: they are parsed, never executed.</p>
+        <p class="text-muted" style="margin-top: var(--s-3)">HTML output is sanitized: remote resources are not embedded, links are restricted to safe schemes, and the generated page is marked <code>noindex</code>. AuraFlow does not fetch images, stylesheets or scripts referenced by the files you convert.</p>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-4)">
+        <h2 class="card-title">6. Duplicate detection only reads file contents</h2>
         <p class="text-muted">To find true duplicates, the app reads the bytes of same-size files and computes SHA-256 hashes — inside a Web Worker, in your browser, in streamed chunks. The hash is a fingerprint for comparison only; it is never sent anywhere and never written anywhere.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h2 class="card-title">6. Security boundaries you should know about</h2>
-        <p class="text-muted">Files you select are treated as data — never executed. Filenames shown in plans and manifests are HTML-escaped, and store only what you picked. The organized ZIP is built locally with a checksummed archive writer. No AI models, no external services, no "anonymous processing" — because there is nobody to process for.</p>
+        <h2 class="card-title">7. Security boundaries you should know about</h2>
+        <p class="text-muted">Files you select are treated as data — never executed. Filenames shown in plans, queues and manifests are HTML-escaped, and store only what you picked. The organized ZIP is built locally with a checksummed archive writer. No AI models, no external services, no "anonymous processing" — because there is nobody to process for.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
-        <h2 class="card-title">7. Hosted pages (this website itself)</h2>
-        <p class="text-muted">The site is served as static files by Vercel. Standard web server logs (IP address, dates, requested paths, user agent) are handled by Vercel under its privacy policy and are not available to AuraFlow beyond the aggregate information Vercel provides. AuraFlow does not add its own server-side logging.</p>
+        <h2 class="card-title">8. Hosted pages (this website itself)</h2>
+        <p class="text-muted">The site is served as static files by Vercel. Standard web server logs (IP address, dates, requested paths, user agent) are handled by Vercel under its privacy policy and are not available to AuraFlow beyond the aggregate information Vercel provides. AuraFlow does not add its own server-side logging. Files are processed in the tab, so file names, contents and conversion results never appear in a URL, query string or request body.</p>
         <p class="text-sm text-muted">Hosting privacy: <a target="_blank" rel="noopener noreferrer" href="https://vercel.com/legal/privacy-policy">Vercel Privacy Policy</a>.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-6)">
-        <h2 class="card-title">8. Advertising and cookies (when enabled)</h2>
+        <h2 class="card-title">9. Advertising and cookies (when enabled)</h2>
         <p class="text-muted">AuraFlow may display advertising to support the free service. If Google AdSense or another advertising partner is enabled, those third parties may place and read cookies on your browser, or use web beacons, IP addresses, and other identifiers to serve and measure ads. This is separate from your file data: AuraFlow never sends your selected files, filenames, hashes, or folder contents to an ad network.</p>
         <p class="text-muted" style="margin-top: var(--s-3)">Where required (including the EEA, UK, and Switzerland), advertising will use a consent management platform and will not serve personalized ads without your consent. You can learn how Google uses data from partner sites at <a target="_blank" rel="noopener noreferrer" href="https://www.google.com/policies/privacy/partners/">How Google uses data</a>, and manage ad personalization in <a target="_blank" rel="noopener noreferrer" href="https://adssettings.google.com/">Google Ad Settings</a>.</p>
         <p class="text-muted" style="margin-top: var(--s-3)">If ads are not enabled, this section is a disclosure of what would apply when they are. The current site loads no advertising scripts.</p>

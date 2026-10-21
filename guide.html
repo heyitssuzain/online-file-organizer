@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How to Use AuraFlow — Browser File Organizer Guide</title>
-  <meta name="description" content="Step-by-step help: choose a folder, review the plan, fix permissions, handle errors, download an organized ZIP, undo a run, and check browser support." />
+  <title>How to Use AuraFlow - Organizer, Converter &amp; PDF Tool Guide</title>
+  <meta name="description" content="Step-by-step help for organizing folders, converting images and documents, building PDFs from images, merging PDFs, browser limits and privacy." />
   <link rel="canonical" href="__BASE_URL__/guide.html" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="How to Use AuraFlow — File Organizer Help Guide" />
-  <meta property="og:description" content="Select folders, review plans, handle errors and understand browser permissions — the complete guide." />
+  <meta property="og:title" content="How to Use AuraFlow - Local File Toolkit Guide" />
+  <meta property="og:description" content="Organize folders, convert files, combine images into PDFs and merge PDFs locally - with honest browser limits." />
   <meta property="og:url" content="__BASE_URL__/guide.html" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="theme-color" content="#0d0e12" />
@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "How to Use AuraFlow Web",
-    "description": "Step-by-step guide: choose a folder, review the plan, handle permissions and errors, download a ZIP, and undo a run.",
+    "description": "Step-by-step guide for organizing folders, converting images and documents, building PDFs from images, merging PDFs, and handling browser limits.",
     "url": "__BASE_URL__/guide.html",
     "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "breadcrumb": {
@@ -105,13 +105,34 @@
           <li><strong>Chrome 86+, Edge 86+, Opera, Brave</strong> — full experience: folder reading, direct sorting, undo.</li>
           <li><strong>Firefox, Safari 14+</strong> — file reading, planning, duplicates, manifest exports and the organized ZIP. No direct folder writes (browser limitation, not a paywall!).</li>
           <li><strong>Mobile browsers</strong> — selection (files or photos), planning and ZIP download work; folder writing does not.</li>
+          <li><strong>All modern browsers</strong> — the converter, Image → PDF and PDF Merger process locally, including their Web Worker jobs.</li>
         </ul>
+      </section>
+
+      <section class="card" style="margin-bottom: var(--s-6)">
+        <h2 class="card-title" id="other-tools">7. Converter and PDF tools</h2>
+        <p class="text-muted"><strong>File Converter:</strong> choose one or more files, pick an output for each, adjust quality/resize or PDF settings if shown, then convert. Download files individually or use <em>Download all as ZIP</em>. Images: PNG, JPG/JPEG, WebP and BMP. Text: TXT, Markdown and HTML to PDF/HTML/MD/TXT. Data: CSV, TSV and JSON to CSV/JSON/XLSX.</p>
+        <p class="text-muted"><strong>Image → PDF:</strong> add images, confirm the previews and order (drag the handle or use the arrows), rotate if needed, then choose A4, US Letter or the original image size, orientation, fit, margin and resolution. Image pages contain pictures, not selectable text.</p>
+        <p class="text-muted"><strong>PDF Merger:</strong> add PDFs, check their page counts, reorder or remove files, then merge. Pages are copied rather than rasterized, so text and vectors stay sharp. Encrypted PDFs must be unlocked first; bookmarks, forms and embedded files are not guaranteed to survive.</p>
+        <p class="text-muted text-sm" style="margin-bottom:0"><strong>Common conversion errors:</strong> HTML → PDF extracts readable text rather than reproducing layout; CJK and emoji in text → PDF are rejected because the bundled font does not contain them; damaged images/PDFs are rejected before processing; and very large batches can hit browser memory limits. Every error is shown per file, and nothing is uploaded.</p>
       </section>
 
       <div class="grid grid-2">
         <a class="card" href="./organizer.html" style="text-decoration:none">
           <h2 class="card-title">Open the Organizer →</h2>
           <p class="text-muted">Try it now — nothing to install, nothing to sign up for.</p>
+        </a>
+        <a class="card" href="./converter.html" style="text-decoration:none">
+          <h2 class="card-title">Open the Converter →</h2>
+          <p class="text-muted">Images, text and data files, converted in your browser.</p>
+        </a>
+        <a class="card" href="./image-to-pdf.html" style="text-decoration:none">
+          <h2 class="card-title">Build an Image PDF →</h2>
+          <p class="text-muted">Reorder, rotate and combine images into one PDF.</p>
+        </a>
+        <a class="card" href="./pdf-merger.html" style="text-decoration:none">
+          <h2 class="card-title">Merge PDFs →</h2>
+          <p class="text-muted">Combine documents without rasterizing their pages.</p>
         </a>
         <a class="card" href="/guides/" style="text-decoration:none">
           <h2 class="card-title">Deeper guides →</h2>

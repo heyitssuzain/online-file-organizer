@@ -13,6 +13,9 @@ const pageHref = (path: string): string => `${BASE}${path}`;
 export const PAGES = {
   home: { href: BASE, label: 'Home' },
   organizer: { href: pageHref('organizer.html'), label: 'Organizer' },
+  converter: { href: pageHref('converter.html'), label: 'Converter' },
+  imagePdf: { href: pageHref('image-to-pdf.html'), label: 'Image to PDF' },
+  pdfMerger: { href: pageHref('pdf-merger.html'), label: 'Merge PDF' },
   features: { href: pageHref('features.html'), label: 'Features' },
   guide: { href: pageHref('guide.html'), label: 'Help' },
   guides: { href: pageHref('guides/'), label: 'Guides' },
@@ -40,7 +43,7 @@ export function brandMark(): string {
 
 export function renderHeader(): string {
   const here = normalizePath(location.pathname);
-  const links = (['home', 'organizer', 'features', 'guide', 'guides', 'about'] as const)
+  const links = (['organizer', 'converter', 'imagePdf', 'pdfMerger', 'guide'] as const)
     .map((k) => {
       const p = PAGES[k];
       const aria = isActive(here, p.href) ? ' aria-current="page"' : '';
@@ -83,12 +86,15 @@ export function renderFooter(): string {
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="brand" href="${PAGES.home.href}">${brandMark()}<span>AuraFlow</span>&nbsp;<span class="edition">Web</span></a>
-        <p>Your files. Finally organized. A fast, privacy-first file organizer for your browser — no uploads, no accounts, no cost.</p>
+        <p>Your files. Finally organized. A fast, privacy-first toolkit for organizing, converting and combining files in your browser — no uploads, no accounts, no cost.</p>
       </div>
       <div class="footer-col">
         <h4>Product</h4>
         <ul>
           <li><a href="${PAGES.organizer.href}">Organizer</a></li>
+          <li><a href="${PAGES.converter.href}">File Converter</a></li>
+          <li><a href="${PAGES.imagePdf.href}">Image to PDF</a></li>
+          <li><a href="${PAGES.pdfMerger.href}">PDF Merger</a></li>
           <li><a href="${PAGES.features.href}">Features</a></li>
           <li><a href="${PAGES.home.href}#demo">Live demo</a></li>
         </ul>

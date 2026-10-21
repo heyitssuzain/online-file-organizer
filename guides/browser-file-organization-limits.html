@@ -23,7 +23,7 @@
     "publisher": { "@type": "Organization", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
     "datePublished": "2026-10-19",
-    "dateModified": "2026-10-20",
+    "dateModified": "2026-10-21",
     "mainEntityOfPage": "__BASE_URL__/guides/browser-file-organization-limits.html"
   }
   </script>
@@ -43,7 +43,7 @@
 
       <article class="article">
         <h1>Browser file organization: capabilities and limits, honestly mapped</h1>
-        <span class="date">By Suzain · Updated October 2026 · 6 min read</span>
+        <span class="date">By Suzain · Updated October 2026 · 8 min read</span>
 
         <p class="lede">Browsers are security fortresses around your disk, and rightly so. But the fortress has gates — and the honest way to build a web file manager is to know exactly which gates exist. Here is the map, browser-agnostic and vendor-flavored, plus what each limitation means in practice for a user, not just for a developer.</p>
 
@@ -74,6 +74,18 @@
         </ul>
         <p>A practical consequence: <strong>capability detection</strong> beats browser sniffing. A good web app asks the platform what it can do and adapts its UI — showing real-folder sorting where available, ZIP fallback elsewhere, and saying why the menu looks different today.</p>
 
+        <h2>Converting and combining files without a server</h2>
+        <p>Conversion is the same story: with your permission, the page can read a picked file, decode it with the browser's own image engine, and produce a new download entirely in memory. AuraFlow uses Canvas for images, <code>pdf-lib</code> inside a Web Worker for PDF pages and merging, and a small local OOXML writer for XLSX. No file bytes need to leave the device, which is why the Network tab stays quiet during a conversion.</p>
+        <p>The honest limits are format-specific, not mysterious:</p>
+        <ul>
+          <li><strong>Images:</strong> Canvas handles the formats the browser can decode (PNG, JPEG, WebP, BMP, GIF, SVG, AVIF). GIF becomes its first frame; SVG is rendered at its natural size; transparency is flattened for JPEG/BMP.</li>
+          <li><strong>Text → PDF:</strong> the bundled font covers Latin, Greek, Cyrillic and common punctuation. CJK and emoji are rejected with the missing characters instead of being replaced by blank glyphs. HTML → PDF extracts readable text, not the page's CSS layout.</li>
+          <li><strong>PDF merge:</strong> pages are copied, not screenshotted, so text and vectors survive. Bookmarks/outlines, forms, embedded files and rare annotations are not guaranteed; encrypted PDFs must be unlocked first.</li>
+          <li><strong>Image → PDF:</strong> each page is an image. There is no OCR and no selectable text inside a photo.</li>
+          <li><strong>Memory:</strong> large batches still share the tab's RAM budget. Downscaling images or splitting a batch is the honest fix, not a hidden server-side retry.</li>
+        </ul>
+        <p>A web tool should say which of those limits applies to the file in front of you. Silent blank glyphs, invented progress bars and "processing on our servers" would all be worse than a clear error.</p>
+
         <h2>Memory: the invisible ceiling</h2>
         <p>The quietest limit is RAM. A browser tab shares your machine's memory with everything else. An organizer that slurps whole video files into memory will tab-crash just as your sorting finishes — which is why real implementations:</p>
         <ul>
@@ -88,6 +100,7 @@
         <div class="article-cta">
           <p><strong>See how your own browser scores</strong> — the Organizer shows its capability badge on load.</p>
           <a class="btn btn-primary" href="../organizer.html">Check my browser's powers</a>
+          <p class="text-sm" style="margin-top:var(--s-3); margin-bottom:0">Try the local toolkit: <a href="../converter.html">File Converter</a> · <a href="../image-to-pdf.html">Image → PDF</a> · <a href="../pdf-merger.html">PDF Merger</a>.</p>
         </div>
 
         <nav class="related" aria-label="Related guides">

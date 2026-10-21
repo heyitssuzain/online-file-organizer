@@ -4,3 +4,34 @@
   background: var(--accent-soft);
   transition: border-color var(--t-fast), background var(--t-fast);
 }
+
+/* Toolkit cards */
+.tool-cards { align-items: stretch; }
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  color: var(--text) !important;
+  text-decoration: none !important;
+  position: relative;
+  overflow: hidden;
+}
+.tool-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -20% -55% 30%;
+  height: 120px;
+  background: radial-gradient(ellipse at center, var(--accent-soft), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--t-med) var(--ease);
+  pointer-events: none;
+}
+.tool-card:hover::after { opacity: 1; }
+.tool-card:hover { border-color: rgba(79, 124, 255, 0.45); }
+.tool-card h3 { font-size: var(--fs-lg); margin-bottom: var(--s-2); }
+.tool-card p { color: var(--text-muted); font-size: var(--fs-sm); flex: 1; }
+.tool-card-cta {
+  margin-top: var(--s-3);
+  color: var(--accent-cyan);
+  font-size: var(--fs-sm);
+  font-weight: 650;
+}

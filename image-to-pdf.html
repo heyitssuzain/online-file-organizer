@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image to PDF Converter — Combine Photos Locally | AuraFlow</title>
+  <meta name="description" content="Combine JPG, PNG, WebP and other images into one sharp PDF. Reorder, rotate, choose A4 or Letter, fit and margins — all locally in your browser." />
+  <link rel="canonical" href="__BASE_URL__/image-to-pdf.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AuraFlow Web" />
+  <meta property="og:title" content="Image to PDF — Combine Images Privately in Your Browser" />
+  <meta property="og:description" content="Build a print-ready PDF from images. Reorder, rotate, pick page size and margins — no upload, no account." />
+  <meta property="og:url" content="__BASE_URL__/image-to-pdf.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Image to PDF — Local, Private, Print-Ready" />
+  <meta name="twitter:description" content="Combine images into one PDF without uploading them." />
+  <meta name="twitter:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AuraFlow Image to PDF",
+    "url": "__BASE_URL__/image-to-pdf.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "isAccessibleForFree": true,
+    "browserRequirements": "Requires JavaScript and Canvas support. Processing is local.",
+    "description": "Combine images into a single PDF with page size, orientation, fit, rotation and margin controls in the browser.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "__BASE_URL__/" },
+        { "@type": "ListItem", "position": 2, "name": "Image to PDF", "item": "__BASE_URL__/image-to-pdf.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="app-page tool-page">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="./">Home</a></li>
+          <li aria-current="page">Image to PDF</li>
+        </ol>
+      </nav>
+
+      <header class="tool-head">
+        <div>
+          <span class="eyebrow">Image to PDF</span>
+          <h1>Turn images into one clean PDF</h1>
+          <p>Add photos or scans, put them in order, rotate what needs rotating, then choose a page size. The PDF is generated on your device with sharp, correctly oriented pages.</p>
+        </div>
+        <span class="privacy-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          No upload · No account
+        </span>
+      </header>
+
+      <div class="tool-grid">
+        <div class="tool-main">
+          <section class="tool-panel" aria-labelledby="drop-h">
+            <div class="tool-drop" id="dropzone">
+              <div class="drop-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
+              </div>
+              <h2 id="drop-h">Drop images here, or choose them</h2>
+              <p>JPG, PNG, WebP, BMP, GIF, SVG and AVIF. Each image becomes one PDF page.</p>
+              <div class="drop-actions">
+                <button class="btn btn-primary" type="button" id="btnPick">Choose images</button>
+                <input type="file" id="fileInput" class="sr-only" tabindex="-1" aria-hidden="true" />
+              </div>
+              <p class="drop-foot">Up to 75 images · 250 MB per batch · previews stay in this tab</p>
+            </div>
+          </section>
+
+          <section class="tool-panel tool-steps" id="emptyHelp" aria-labelledby="steps-h">
+            <div class="tool-panel-body">
+              <h2 id="steps-h">How it works</h2>
+              <ol>
+                <li><span class="step-n" aria-hidden="true">1</span><div><strong>Choose images</strong><p>Previews confirm orientation. Corrupt or unsupported files are flagged, never guessed at.</p></div></li>
+                <li><span class="step-n" aria-hidden="true">2</span><div><strong>Arrange the pages</strong><p>Drag or use the arrow buttons to reorder, rotate in 90° steps, and remove what you do not need.</p></div></li>
+                <li><span class="step-n" aria-hidden="true">3</span><div><strong>Build the PDF</strong><p>Pick a page size, fit, margins and resolution. pdf-lib assembles the file in a local worker.</p></div></li>
+              </ol>
+            </div>
+          </section>
+
+          <div class="notice" id="imageNotice" hidden role="status"></div>
+
+          <section class="tool-panel" id="queuePanel" hidden aria-labelledby="queue-h">
+            <div class="tool-panel-head">
+              <h2 id="queue-h">Pages <span class="badge" id="queueCount">0</span></h2>
+              <button class="btn btn-ghost btn-sm" type="button" id="btnClear">Clear all</button>
+            </div>
+            <div class="queue" id="queue" aria-live="polite"></div>
+            <div class="page-strip" id="pageStrip" aria-label="Page previews"></div>
+
+            <div class="settings-grid" id="settingsGrid">
+              <div class="setting-group">
+                <h3>Page layout</h3>
+                <div class="setting">
+                  <label for="pdfPageSize">Page size</label>
+                  <select id="pdfPageSize">
+                    <option value="a4" selected>A4</option>
+                    <option value="letter">US Letter</option>
+                    <option value="image">Original image size</option>
+                  </select>
+                </div>
+                <div class="setting">
+                  <label for="pdfOrientation">Orientation</label>
+                  <select id="pdfOrientation">
+                    <option value="auto" selected>Auto (from each image)</option>
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                  </select>
+                </div>
+                <div class="setting">
+                  <label for="pdfFit">Image fit</label>
+                  <select id="pdfFit">
+                    <option value="contain" selected>Fit inside the page</option>
+                    <option value="cover">Fill the page (crop edges)</option>
+                  </select>
+                  <span class="hint">Aspect ratio is always preserved. “Fill” may crop.</span>
+                </div>
+                <div class="setting">
+                  <label for="pdfMargin">Margin</label>
+                  <select id="pdfMargin">
+                    <option value="0">None</option>
+                    <option value="10" selected>10 mm</option>
+                    <option value="20">20 mm</option>
+                    <option value="30">30 mm</option>
+                  </select>
+                </div>
+                <div class="setting">
+                  <label for="pdfQuality">Image resolution</label>
+                  <select id="pdfQuality">
+                    <option value="0" selected>Original — highest quality</option>
+                    <option value="3200">High — max 3200 px</option>
+                    <option value="2200">Balanced — max 2200 px</option>
+                    <option value="1200">Compact — max 1200 px</option>
+                  </select>
+                  <span class="hint">Downscaling can reduce memory use and PDF size.</span>
+                </div>
+                <div class="setting">
+                  <label for="pdfName">PDF file name</label>
+                  <input type="text" id="pdfName" value="auraflow-images" maxlength="80" autocomplete="off" spellcheck="false" />
+                  <span class="hint">The .pdf extension is added automatically.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-actions">
+              <button class="btn btn-primary" type="button" id="btnGenerate" disabled>Create PDF</button>
+              <button class="btn btn-danger btn-sm" type="button" id="btnCancel" hidden>Cancel</button>
+              <span class="grow"></span>
+              <span class="text-sm text-muted" id="statusLine" aria-live="polite">Drag the handle to reorder pages. Rotate before generating.</span>
+            </div>
+
+            <div class="tool-progress" id="progressPanel" hidden>
+              <div class="progress-meta">
+                <strong id="progressLabel">Working…</strong>
+                <span id="progressDetail">0%</span>
+              </div>
+              <div class="progress" role="progressbar" aria-label="PDF creation progress"><div class="progress-bar" id="progressBar"></div></div>
+            </div>
+          </section>
+
+          <section class="tool-panel" id="resultsPanel" hidden aria-labelledby="results-h">
+            <div class="tool-panel-head">
+              <h2 id="results-h">Your PDF</h2>
+              <span class="badge badge-ok">Built locally</span>
+            </div>
+            <div class="tool-panel-body">
+              <p class="text-muted" id="resultMeta"></p>
+              <div class="tool-actions" style="border-top:0; padding:0">
+                <button class="btn btn-primary" type="button" id="btnDownload">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+                  Download PDF
+                </button>
+                <button class="btn btn-ghost" type="button" id="btnStartOver">Start over</button>
+              </div>
+              <p class="text-xs text-faint" style="margin-top:var(--s-3); margin-bottom:0">Image pages are embedded as pictures, so text inside photos is not selectable. No OCR is performed.</p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="tool-aside" aria-label="Privacy and format information">
+          <div class="card">
+            <div class="aside-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <h2>Your photos stay here</h2>
+            <ul>
+              <li>Images are decoded by your browser, not a server.</li>
+              <li>PDF pages are composed in memory with pdf-lib inside a local Web Worker.</li>
+              <li>No uploads, accounts, tracking or image history.</li>
+              <li>Previews are temporary object URLs, revoked on removal.</li>
+              <li>Closing the tab discards the whole queue.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Good to know</h2>
+            <ul>
+              <li>JPEG photos are normalised at high quality so phone orientation is respected.</li>
+              <li>PNG images keep their transparency; transparent areas use the PDF background.</li>
+              <li>Animated GIFs become their first frame.</li>
+              <li>SVG files are rendered by the browser at their natural size.</li>
+              <li>Every page is an image; this is not a scan-to-text tool.</li>
+              <li>Cancel applies while images are being prepared. Once PDF assembly starts, it finishes rather than pretending to stop.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Memory limits</h3>
+            <p>Large photo collections consume real memory. If a batch fails, reduce the resolution, use fewer images, or split it into two PDFs. A browser tab has no swap file of its own.</p>
+            <p class="fineprint">Need to merge existing PDFs instead? <a href="./pdf-merger.html">Open PDF Merger</a>.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/pages/image-to-pdf.ts"></script>
+</body>
+</html>

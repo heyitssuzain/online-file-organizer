@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Free Online File Organizer — Sort Files by Type | AuraFlow</title>
-  <meta name="description" content="Sort Downloads, Desktop or project folders into clean categories in your browser. Preview every move, avoid overwrites, and keep files on your device." />
+  <title>Free Private File Toolkit — Organize, Convert &amp; Merge | AuraFlow</title>
+  <meta name="description" content="Organize folders, convert images and documents, combine photos into PDF and merge PDFs in your browser. Preview every change, keep files on your device." />
   <link rel="canonical" href="__BASE_URL__/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AuraFlow Web" />
-  <meta property="og:title" content="Free Online File Organizer — AuraFlow" />
-  <meta property="og:description" content="Sort messy folders into clean categories in your browser. Preview every move, avoid overwrites, and keep files on your device." />
+  <meta property="og:title" content="AuraFlow Web — Private File Toolkit" />
+  <meta property="og:description" content="Organize, convert and combine files in your browser. Preview every change, avoid overwrites, and keep files on your device." />
   <meta property="og:url" content="__BASE_URL__/" />
   <meta property="og:image" content="__BASE_URL__/og-cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="AuraFlow Web — Your Files. Finally Organized." />
-  <meta name="twitter:description" content="Free online file organizer. Sort messy folders into clean categories in your browser — files never leave your device." />
+  <meta name="twitter:description" content="A privacy-first file toolkit. Organize folders, convert files and build PDFs locally — files never leave your device." />
   <meta name="twitter:image" content="__BASE_URL__/og-cover.png" />
   <meta name="theme-color" content="#0d0e12" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
@@ -24,7 +24,7 @@
     "@type": "WebSite",
     "name": "AuraFlow Web",
     "url": "__BASE_URL__/",
-    "description": "Free browser-based file organizer that sorts files by type, with preview, one-click undo and duplicate detection.",
+    "description": "Privacy-first browser toolkit for organizing folders, converting images and documents, creating PDFs from images and merging PDFs.",
     "inLanguage": "en",
     "publisher": {
       "@type": "Organization",
@@ -42,7 +42,7 @@
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "Any (modern web browser)",
     "url": "__BASE_URL__/",
-    "description": "Browser-based file organizer: categorize files by type, extension or date, preview every move, download an organization plan or an organized ZIP.",
+    "description": "Browser-based file toolkit: organize files by type, extension or date, convert images and documents, build Image-to-PDF documents, merge PDFs and download results locally.",
     "isAccessibleForFree": true,
     "browserRequirements": "Requires JavaScript and a modern browser.",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
@@ -57,12 +57,12 @@
     <section class="hero" aria-labelledby="hero-h">
       <div class="container">
         <div class="hero-copy">
-          <span class="hero-kicker">Free online file organizer</span>
+          <span class="hero-kicker">Private file toolkit</span>
           <h1 id="hero-h"><span class="hero-grad">Your files. Finally organized.</span></h1>
-          <p class="lede">Organize your files, clean up messy folders, and take control of your digital workspace — with a simple, privacy-conscious workflow that runs entirely in your browser.</p>
+          <p class="lede">Organize messy folders, convert images and documents, and combine files into PDFs — with a simple, privacy-first workflow that runs entirely in your browser.</p>
           <div class="hero-ctas">
             <a class="btn btn-primary" href="./organizer.html">Organize My Files</a>
-            <a class="btn btn-secondary" href="./features.html">Explore Features</a>
+            <a class="btn btn-secondary" href="#tools">Explore the toolkit</a>
           </div>
           <p class="hero-privacy">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
@@ -73,7 +73,43 @@
       </div>
     </section>
 
-    <!-- ============ WORKING DEMO ============ -->
+    <!-- ============ TOOLKIT ============ -->
+    <section class="section" id="tools" aria-labelledby="tools-h">
+      <div class="container">
+        <div class="section-head reveal">
+          <span class="eyebrow">The toolkit</span>
+          <h2 id="tools-h">Four focused tools. One privacy rule.</h2>
+          <p>Every tool reads your files in the tab, does the work in memory, and hands you a normal download. No account, no queue, no server-side copy.</p>
+        </div>
+        <div class="grid grid-4 tool-cards" style="margin-top: var(--s-5)">
+          <a class="card tool-card reveal" href="./organizer.html">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+            <h3>Organize folders</h3>
+            <p>Preview every move, detect duplicates and undo a run. Sort by type, extension or date.</p>
+            <span class="tool-card-cta">Open organizer →</span>
+          </a>
+          <a class="card tool-card reveal" href="./converter.html" style="--stagger-i:1">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h12m0 0l-3-3m3 3l-3 3"/><path d="M20 17H8m0 0l3-3m-3 3l3 3"/></svg></div>
+            <h3>Convert files</h3>
+            <p>Images, text documents and data files. Choose an output per file and download one ZIP.</p>
+            <span class="tool-card-cta">Open converter →</span>
+          </a>
+          <a class="card tool-card reveal" href="./image-to-pdf.html" style="--stagger-i:2">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg></div>
+            <h3>Image to PDF</h3>
+            <p>Reorder and rotate photos, pick A4 or Letter, then build a sharp PDF locally.</p>
+            <span class="tool-card-cta">Build a PDF →</span>
+          </a>
+          <a class="card tool-card reveal" href="./pdf-merger.html" style="--stagger-i:3">
+            <div class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>
+            <h3>Merge PDFs</h3>
+            <p>Combine documents without rasterizing pages. Text stays selectable and vectors stay sharp.</p>
+            <span class="tool-card-cta">Merge PDFs →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section class="section" id="demo" aria-labelledby="demo-h">
       <div class="container">
         <div class="section-head reveal">
@@ -170,9 +206,9 @@
           <div class="reveal">
             <span class="eyebrow">Privacy &amp; safety</span>
             <h2 id="safe-h" style="font-size: var(--fs-2xl)">Your files stay on your device</h2>
-            <p class="text-muted">AuraFlow Web requests file access only when you choose files, and only in the tab you're using. There is no backend that could ever receive a file, because the organizing logic ships with the page itself.</p>
+            <p class="text-muted">AuraFlow Web requests file access only when you choose files, and only in the tab you're using. There is no backend that could ever receive a file, because the organizing, conversion and PDF logic ships with the page itself.</p>
             <ul class="text-muted" style="padding-left: 1.2rem; display:grid; gap: 0.4rem">
-              <li>Nothing is uploaded — all categorization, previews and exports are local</li>
+              <li>Nothing is uploaded — categorization, previews, conversions, PDF jobs and exports are local</li>
               <li>No accounts and no first-party tracking; <a href="./privacy.html">hosting and advertising details</a> are on the privacy page</li>
               <li>Folder <em>writing</em> happens only after an explicit "read &amp; write" permission grant</li>
               <li>The desktop app keeps the same promise — it even shows a preview and one-click undo</li>
@@ -224,6 +260,10 @@
         </div>
         <div class="grid" style="gap: var(--s-3)" id="faq-list">
           <!-- FAQ content is static HTML for SEO; see partial below -->
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Are my files uploaded anywhere?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">No. There is no server involved in organizing, converting or merging — everything runs as JavaScript in your own browser tab. PDF jobs use a local Web Worker in the same tab. You can even use it offline once the page and its assets have loaded.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">What can the file converter do?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Images: PNG, JPG/JPEG, WebP and BMP from PNG, JPG, WebP, BMP, GIF, SVG and AVIF. Text: TXT, Markdown and HTML to PDF, HTML, MD or TXT. Data: CSV, TSV and JSON to CSV, JSON or XLSX. You can convert up to 50 files per batch and download them individually or as a ZIP. <a href="./converter.html">Open the converter</a>.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Can I combine images into a PDF or merge PDFs?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Yes. Image → PDF supports previews, reordering, rotation, A4/Letter/original pages, orientation, fit and margins. PDF Merger combines files in the order you choose without rasterizing pages, so selectable text and vectors stay intact. <a href="./image-to-pdf.html">Make a PDF</a> or <a href="./pdf-merger.html">merge PDFs</a>.</p></details>
+          <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">What are the conversion limits?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">HTML → PDF extracts readable text rather than reproducing the page layout. XLSX export is one-way, not an XLSX reader. Text PDFs use a bundled Latin/Greek/Cyrillic font, so CJK and emoji are rejected with the exact missing characters instead of producing blank glyphs. Merged PDFs keep page content and dimensions, but bookmarks, forms and embedded files are not guaranteed. <a href="./features.html#compatibility">Full limits</a>.</p></details>
           <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Are my files uploaded anywhere?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">No. There is no server involved in organizing — everything runs as JavaScript in your own browser tab. You can even use it offline once the page has loaded.</p></details>
           <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Can it organize into a real folder on my disk?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Yes, in Chromium browsers (Chrome, Edge, Opera, Brave) via the File System Access API — you explicitly grant "read &amp; write" for the folder you pick. Firefox and Safari don't support folder writes yet, so AuraFlow offers an organized ZIP download there instead. <a href="./features.html#compatibility">Details</a></p></details>
           <details class="card reveal" style="padding: var(--s-4) var(--s-5)"><summary style="font-weight:600; cursor:pointer">Will it overwrite my existing files?</summary><p class="text-muted" style="margin: var(--s-3) 0 0">Never. Collisions are detected before the run against both the plan itself and the files already present in the destination folder; extra copies get a safe <code>_1</code> suffix, identical to the desktop app's behaviour.</p></details>

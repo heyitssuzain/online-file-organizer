@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free File Converter — Images, PDF, CSV, JSON &amp; XLSX | AuraFlow</title>
+  <meta name="description" content="Convert PNG, JPG, WebP, BMP, TXT, Markdown, HTML, CSV, TSV and JSON locally in your browser. No uploads, no accounts, no file storage." />
+  <link rel="canonical" href="__BASE_URL__/converter.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AuraFlow Web" />
+  <meta property="og:title" content="Private File Converter — Everything Runs in Your Browser" />
+  <meta property="og:description" content="Convert images, text documents and data files locally. Choose an output, convert, download — your files never leave your device." />
+  <meta property="og:url" content="__BASE_URL__/converter.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AuraFlow File Converter — Local, Private, Fast" />
+  <meta name="twitter:description" content="Convert images, documents and data files without uploading them." />
+  <meta name="twitter:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AuraFlow File Converter",
+    "url": "__BASE_URL__/converter.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "isAccessibleForFree": true,
+    "browserRequirements": "Requires JavaScript and Canvas support. Processing is local.",
+    "description": "Browser-local converter for PNG, JPG, WebP, BMP, TXT, Markdown, HTML, CSV, TSV, JSON and XLSX output.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "__BASE_URL__/" },
+        { "@type": "ListItem", "position": 2, "name": "File Converter", "item": "__BASE_URL__/converter.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="app-page tool-page">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="./">Home</a></li>
+          <li aria-current="page">File Converter</li>
+        </ol>
+      </nav>
+
+      <header class="tool-head">
+        <div>
+          <span class="eyebrow">Local file converter</span>
+          <h1>Convert files without sending them anywhere</h1>
+          <p>Images, text documents and data files are decoded and re-encoded inside this tab. Pick an output per file, then download the results individually or as one ZIP.</p>
+        </div>
+        <span class="privacy-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          No upload · No account
+        </span>
+      </header>
+
+      <div class="tool-grid">
+        <div class="tool-main">
+          <section class="tool-panel" aria-labelledby="drop-h">
+            <div class="tool-drop" id="dropzone">
+              <div class="drop-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7 9m5-5l5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+              </div>
+              <h2 id="drop-h">Drop files here, or choose them</h2>
+              <p>Images, text documents and data files. Formats are detected automatically and only supported outputs appear.</p>
+              <div class="drop-actions">
+                <button class="btn btn-primary" type="button" id="btnPick">Choose files</button>
+                <input type="file" id="fileInput" class="sr-only" tabindex="-1" aria-hidden="true" />
+              </div>
+              <p class="drop-foot">Up to 50 files · 150 MB per file · 300 MB per batch</p>
+            </div>
+          </section>
+
+          <section class="tool-panel tool-steps" id="emptyHelp" aria-labelledby="steps-h">
+            <div class="tool-panel-body">
+              <h2 id="steps-h">How it works</h2>
+              <ol>
+                <li><span class="step-n" aria-hidden="true">1</span><div><strong>Choose files</strong><p>Formats are detected automatically; unsupported files are listed instead of silently dropped.</p></div></li>
+                <li><span class="step-n" aria-hidden="true">2</span><div><strong>Pick an output</strong><p>Set quality, resizing, delimiter or PDF options for the file types in your batch.</p></div></li>
+                <li><span class="step-n" aria-hidden="true">3</span><div><strong>Download</strong><p>Save each result individually or one ZIP. Everything is converted in this tab.</p></div></li>
+              </ol>
+            </div>
+          </section>
+
+          <div class="notice" id="converterNotice" hidden role="status"></div>
+
+          <section class="tool-panel" id="queuePanel" hidden aria-labelledby="queue-h">
+            <div class="tool-panel-head">
+              <h2 id="queue-h">Conversion queue <span class="badge" id="queueCount">0</span></h2>
+              <button class="btn btn-ghost btn-sm" type="button" id="btnClear">Clear all</button>
+            </div>
+            <div class="queue" id="queue" aria-live="polite"></div>
+
+            <div class="settings-grid" id="settingsGrid">
+              <div class="setting-group" id="imgSettings">
+                <h3>Image settings</h3>
+                <div class="setting">
+                  <span class="setting-label">Quality <output id="imgQualityOut" for="imgQuality">92%</output></span>
+                  <div class="range-row">
+                    <input type="range" id="imgQuality" min="0.5" max="1" step="0.01" value="0.92" aria-label="JPEG and WebP quality" />
+                  </div>
+                  <span class="hint">Applies to JPG and WebP. PNG stays lossless; BMP is uncompressed.</span>
+                </div>
+                <div class="setting">
+                  <label for="imgMax">Maximum dimension</label>
+                  <select id="imgMax">
+                    <option value="0">Keep original</option>
+                    <option value="4096">4096 px</option>
+                    <option value="2048">2048 px</option>
+                    <option value="1600">1600 px</option>
+                    <option value="1024">1024 px</option>
+                  </select>
+                  <span class="hint">Downscales the longest side; never enlarges.</span>
+                </div>
+                <div class="setting">
+                  <label for="imgBg">Background for JPG/BMP</label>
+                  <input type="color" id="imgBg" value="#ffffff" aria-label="Background colour for JPG and BMP" />
+                  <span class="hint">Transparent pixels are flattened onto this colour.</span>
+                </div>
+              </div>
+
+              <div class="setting-group" id="docSettings">
+                <h3>Document settings</h3>
+                <div class="setting">
+                  <label for="pdfPage">PDF page size</label>
+                  <select id="pdfPage">
+                    <option value="a4">A4</option>
+                    <option value="letter">US Letter</option>
+                  </select>
+                </div>
+                <div class="setting">
+                  <label for="pdfFont">Body text size</label>
+                  <select id="pdfFont">
+                    <option value="9">9 pt — compact</option>
+                    <option value="10.5" selected>10.5 pt — standard</option>
+                    <option value="12">12 pt — comfortable</option>
+                    <option value="14">14 pt — large</option>
+                  </select>
+                </div>
+                <div class="setting">
+                  <label for="pdfMargin">PDF margin</label>
+                  <select id="pdfMargin">
+                    <option value="12">12 mm</option>
+                    <option value="18" selected>18 mm</option>
+                    <option value="25">25 mm</option>
+                    <option value="32">32 mm</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="setting-group" id="dataSettings">
+                <h3>Data settings</h3>
+                <div class="setting">
+                  <label for="sheetName">Excel sheet name</label>
+                  <input type="text" id="sheetName" value="Sheet1" maxlength="31" />
+                  <span class="hint">Used only when the output is XLSX. XLSX is output-only; it is not read.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-actions">
+              <button class="btn btn-primary" type="button" id="btnConvert" disabled>Convert</button>
+              <button class="btn btn-danger btn-sm" type="button" id="btnCancel" hidden>Cancel</button>
+              <span class="grow"></span>
+              <span class="text-sm text-muted" id="statusLine" aria-live="polite">Files are processed one at a time to keep memory use predictable.</span>
+            </div>
+
+            <div class="tool-progress" id="progressPanel" hidden>
+              <div class="progress-meta">
+                <strong id="progressLabel">Working…</strong>
+                <span id="progressDetail">0%</span>
+              </div>
+              <div class="progress" role="progressbar" aria-label="Conversion progress"><div class="progress-bar" id="progressBar"></div></div>
+            </div>
+          </section>
+
+          <section class="tool-panel" id="resultsPanel" hidden aria-labelledby="results-h">
+            <div class="tool-panel-head">
+              <h2 id="results-h">Converted files</h2>
+              <button class="btn btn-secondary btn-sm" type="button" id="btnZip" hidden>Download all as ZIP</button>
+            </div>
+            <div class="summary-bar" id="resultSummary" aria-live="polite"></div>
+            <div class="result-list" id="resultsList"></div>
+          </section>
+        </div>
+
+        <aside class="tool-aside" aria-label="Privacy and format information">
+          <div class="card">
+            <div class="aside-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <h2>Privacy by default</h2>
+            <ul>
+              <li>Files are read with the browser's own file API.</li>
+              <li>Conversion happens in memory in this tab.</li>
+              <li>No uploads, accounts, analytics or file history.</li>
+              <li>Only your theme choice is stored locally.</li>
+              <li>Closing or reloading the page drops the queue.</li>
+              <li>Downloads are normal files you control.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>What converts here</h2>
+            <p><strong>Images:</strong> PNG, JPG/JPEG, WebP, BMP, GIF, SVG, AVIF and browser-decodable ICO.</p>
+            <div class="format-pills" aria-label="Image output formats"><span>PNG</span><span>JPG</span><span>WebP</span><span>BMP</span></div>
+            <p style="margin-top:var(--s-3)"><strong>Documents:</strong> TXT, Markdown and HTML to PDF, HTML, Markdown or plain text where meaningful.</p>
+            <div class="format-pills" aria-label="Document output formats"><span>PDF</span><span>HTML</span><span>MD</span><span>TXT</span></div>
+            <p style="margin-top:var(--s-3)"><strong>Data:</strong> CSV, TSV and JSON to CSV, JSON or a real XLSX workbook.</p>
+            <div class="format-pills" aria-label="Data output formats"><span>CSV</span><span>JSON</span><span>XLSX</span></div>
+            <p class="fineprint">Audio/video conversion is not advertised: a reliable, fully local engine is not bundled. PDFs belong in <a href="./image-to-pdf.html">Image → PDF</a> or <a href="./pdf-merger.html">PDF Merger</a>.</p>
+          </div>
+
+          <div class="card">
+            <h3>Honest limits</h3>
+            <ul>
+              <li>GIF becomes a still image (first frame).</li>
+              <li>Large images can hit browser canvas memory limits; downscale if needed.</li>
+              <li>Text is read as UTF-8 or UTF-16. Legacy encodings may need re-saving.</li>
+              <li>HTML → PDF extracts readable text; it does not reproduce CSS layout or images.</li>
+              <li>Text PDFs use a bundled Latin/Greek/Cyrillic font. CJK and emoji are rejected with the missing characters instead of being silently blanked.</li>
+              <li>XLSX export is one-way; this tool does not open spreadsheets.</li>
+              <li>Keep the tab open while converting.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/pages/converter.ts"></script>
+</body>
+</html>

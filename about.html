@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "AboutPage",
     "name": "About AuraFlow Web",
-    "description": "The story and philosophy behind AuraFlow, a free and open-source file organizer for Windows and the browser.",
+    "description": "The story and philosophy behind AuraFlow, a free and open-source file organizer for Windows and a privacy-first browser toolkit for organizing, converting and merging files.",
     "url": "__BASE_URL__/about.html",
     "mainEntity": {
       "@type": "Person",
@@ -52,6 +52,7 @@
         <h2 class="card-title">The story so far</h2>
         <p class="text-muted">AuraFlow started as a Windows desktop app: a fast file organizer with a preview screen, one-click undo and a completely offline workflow. It's free and open source — <a target="_blank" rel="noopener" href="https://github.com/heyitssuzain/File-Organiser">the desktop project lives on GitHub</a>, shipped as a lean ~26 MB executable that doesn't even need Python installed.</p>
         <p class="text-muted">AuraFlow Web is its browser sibling: the same category engine and preview-first philosophy, reimplemented with browser technologies so it works on any OS — Windows, macOS, Linux, ChromeOS — without installing anything. The web edition's category lists, collision-renaming rules (-<code>_1</code>, -<code>_2</code>) and exclusion filters are direct ports of the desktop's proven logic, and this site's own test suite verifies that parity.</p>
+        <p class="text-muted">The browser edition has also grown into a small local toolkit: a file converter, an image-to-PDF builder and a PDF merger. They follow the same rule as the organizer — your files stay in the tab — and they state their format limits instead of hiding them behind a progress bar.</p>
       </section>
 
       <section class="card" style="margin-bottom: var(--s-4)">
@@ -77,6 +78,7 @@
             <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">One-click undo</td><td>✓ unlimited sessions</td><td>✓ within the tab session</td></tr>
             <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Recursive scan</td><td>✓ configurable depth</td><td>✓ capped at 3 levels</td></tr>
             <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Duplicate content check</td><td>✓</td><td>✓ (SHA-256 streamed)</td></tr>
+            <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Converter &amp; PDF tools</td><td>—</td><td>✓ local, no upload</td></tr>
             <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Manifest / report export</td><td>✓ text report</td><td>✓ JSON + CSV + TXT</td></tr>
             <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Organized ZIP fallback</td><td>n/a</td><td>✓ all browsers</td></tr>
             <tr style="border-top:1px solid var(--border)"><td style="padding:8px 8px 8px 0">Very large libraries</td><td>✓ native speed</td><td>practical caps (memory, 5k files)</td></tr>

@@ -6,14 +6,15 @@
  *   2. home: 3D hero composes cards, categories grid fills
  *   3. home demo: file input → plan preview → CSV download
  *   4. organizer: full workflow — select → plan → rules → previews → exports
- *   5. responsive: no horizontal overflow at 320/375/430/768/1024/1440
- *   6. reduced-motion page remains stable
- *   7. 404 page serves at unknown paths
- *   8. SEO metadata present per page (title, description, canonical)
+ *   5. tool pages: converter, Image → PDF, PDF merger load with local-processing UI
+ *   6. responsive: no horizontal overflow at 320/375/430/768/1024/1440
+ *   7. reduced-motion page remains stable
+ *   8. 404 page serves at unknown paths
+ *   9. SEO metadata present per page (title, description, canonical)
  */
 
 import { chromium } from 'playwright';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4173/File-Organizer-Web/';
 const shot = 'artifacts';
@@ -22,6 +23,9 @@ mkdirSync(shot, { recursive: true });
 const pages = [
   '',
   'organizer.html',
+  'converter.html',
+  'image-to-pdf.html',
+  'pdf-merger.html',
   'features.html',
   'privacy.html',
   'guide.html',
@@ -65,8 +69,40 @@ const url = (p) => `${BASE}${p}`;
   for (const p of pages) {
     await page.goto(url(p), { waitUntil: 'networkidle' });
   }
-  record('all 14 pages load with zero console errors', errors.length === 0, errors.slice(0, 3).join(' | '));
+  record('all public pages load with zero console errors', errors.length === 0, errors.slice(0, 3).join(' | '));
   record('no failed network requests on any page', failures.length === 0, failures.slice(0, 3).join(' | '));
+  await ctx.close();
+}
+
+// ---------- 1b. toolkit pages expose the local-processing UI ----------
+{
+  const ctx = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+  const page = await ctx.newPage();
+  const issues = [];
+  const unnamed = [];
+  for (const p of ['converter.html', 'image-to-pdf.html', 'pdf-merger.html']) {
+    await page.goto(url(p), { waitUntil: 'networkidle' });
+    if (!(await page.locator('#dropzone').isVisible())) issues.push(`${p}: dropzone hidden`);
+    if (!(await page.locator('.privacy-chip').isVisible())) issues.push(`${p}: privacy chip hidden`);
+    const text = await page.locator('main').innerText();
+    if (!/No upload/i.test(text) && !/stay/i.test(text)) issues.push(`${p}: local-processing notice missing`);
+    if (await page.locator('#fileInput').count() !== 1) issues.push(`${p}: file input missing`);
+    unnamed.push(
+      ...(await page.evaluate(() =>
+        [...document.querySelectorAll('button, select, input')]
+          .filter((el) => el.offsetParent !== null && el.getAttribute('aria-hidden') !== 'true')
+          .filter((el) => {
+            if (el instanceof HTMLInputElement && el.type === 'file') return false;
+            const label = el.getAttribute('aria-label') || el.getAttribute('title');
+            const labelled = el instanceof HTMLInputElement && el.labels && el.labels.length > 0;
+            return !label && !labelled && !(el.textContent || '').trim();
+          })
+          .map((el) => `${p}:${el.id || el.tagName.toLowerCase()}:${(el.textContent || '').trim().slice(0, 20)}`),
+      )),
+    );
+  }
+  record('all three toolkit pages show local-processing UI', issues.length === 0, issues.join(' | '));
+  record('toolkit controls have accessible names', unnamed.length === 0, unnamed.slice(0, 5).join(' | '));
   await ctx.close();
 }
 
@@ -78,7 +114,7 @@ const url = (p) => `${BASE}${p}`;
   await page.goto(url(''), { waitUntil: 'networkidle' });
 
   const title = await page.title();
-  record('home title contains brand + search keyword', /AuraFlow/.test(title) && /file organizer/i.test(title), title);
+  record('home title contains brand + search keyword', /AuraFlow/.test(title) && /file (organizer|toolkit)/i.test(title), title);
 
   const canon = await page.locator('link[rel=canonical]').getAttribute('href');
   record('canonical link is absolute and uses the root URL', /^https:\/\/.+\/$/.test(canon ?? ''), canon ?? 'missing');
@@ -224,7 +260,7 @@ const url = (p) => `${BASE}${p}`;
 
   await page.screenshot({ path: `${shot}/organizer.png`, fullPage: true });
 
-  // Empty selection复原: clear
+  // Empty selection reset: clear
   await page.locator('#btnClear').click();
   await page.waitForTimeout(200);
   record('clear resets the workspace', await page.locator('#workspace').isHidden());
@@ -240,7 +276,7 @@ const url = (p) => `${BASE}${p}`;
   let overflows = [];
   for (const w of widths) {
     await page.setViewportSize({ width: w, height: 900 });
-    for (const p of ['', 'organizer.html', 'features.html', 'guides/', 'contact.html', 'terms.html']) {
+    for (const p of ['', 'organizer.html', 'converter.html', 'image-to-pdf.html', 'pdf-merger.html', 'features.html', 'guides/', 'contact.html', 'terms.html']) {
       await page.goto(url(p), { waitUntil: 'networkidle' });
       const sw = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body ? document.body.scrollWidth : 0));
       if (sw > w + 2) overflows.push(`${w}px @ ${p || 'index'} (scrollWidth=${sw})`);
@@ -296,6 +332,23 @@ const url = (p) => `${BASE}${p}`;
   await ctx.close();
 }
 
+// ---------- 7b. deployment headers support the toolkit ----------
+{
+  const config = JSON.parse(readFileSync('vercel.json', 'utf8'));
+  const csp = config.headers?.[0]?.headers?.find((h) => h.key === 'Content-Security-Policy')?.value ?? '';
+  const redirects = (config.redirects ?? []).map((r) => `${r.source}→${r.destination}`);
+  record(
+    'deployed CSP allows same-origin workers, blob previews and bundled fonts',
+    /worker-src 'self' blob:/.test(csp) && /img-src 'self' data: blob:/.test(csp) && /font-src 'self'/.test(csp),
+    csp.slice(0, 120),
+  );
+  record(
+    'Vercel redirects canonicalize index pages',
+    redirects.includes('/index.html→/') && redirects.includes('/guides/index.html→/guides/'),
+    redirects.join(' | '),
+  );
+}
+
 // ---------- 8. SEO metadata sweep ----------
 {
   const ctx = await browser.newContext();
@@ -328,7 +381,7 @@ const url = (p) => `${BASE}${p}`;
 
   const sitemap = await (await ctx.request.get(`${BASE}sitemap.xml`)).text();
   const sitemapUrls = (sitemap.match(/<loc>/g) ?? []).length;
-  record('sitemap.xml lists all public pages', sitemapUrls >= 14, `${sitemapUrls} urls`);
+  record('sitemap.xml lists all public pages', sitemapUrls >= 17, `${sitemapUrls} urls`);
   const robots = await (await ctx.request.get(`${BASE}robots.txt`)).text();
   record('robots.txt references sitemap', /Sitemap:/i.test(robots));
   await ctx.close();

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merge PDF Files Online — Private, Local PDF Merger | AuraFlow</title>
+  <meta name="description" content="Combine multiple PDFs into one document in your browser. Reorder files, keep page sizes, text and vectors — no uploads, no accounts, no server." />
+  <link rel="canonical" href="__BASE_URL__/pdf-merger.html" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="AuraFlow Web" />
+  <meta property="og:title" content="PDF Merger — Combine PDFs Without Uploading Them" />
+  <meta property="og:description" content="Merge PDFs locally. Keep text selectable and vectors sharp. Reorder files, see page counts, download the result." />
+  <meta property="og:url" content="__BASE_URL__/pdf-merger.html" />
+  <meta property="og:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AuraFlow PDF Merger — Local and Private" />
+  <meta name="twitter:description" content="Merge PDFs in your browser. No uploads, no accounts." />
+  <meta name="twitter:image" content="__BASE_URL__/og-cover.png" />
+  <meta name="theme-color" content="#0d0e12" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AuraFlow PDF Merger",
+    "url": "__BASE_URL__/pdf-merger.html",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any (modern web browser)",
+    "isAccessibleForFree": true,
+    "browserRequirements": "Requires JavaScript. Processing is local.",
+    "description": "Merge multiple PDF files in the order you choose without rasterizing pages or uploading documents.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "isPartOf": { "@type": "WebSite", "name": "AuraFlow Web", "url": "__BASE_URL__/" },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "__BASE_URL__/" },
+        { "@type": "ListItem", "position": 2, "name": "PDF Merger", "item": "__BASE_URL__/pdf-merger.html" }
+      ]
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="site-header"></div>
+
+  <main id="main" class="app-page tool-page">
+    <div class="container">
+      <nav aria-label="Breadcrumb" class="crumbs">
+        <ol>
+          <li><a href="./">Home</a></li>
+          <li aria-current="page">PDF Merger</li>
+        </ol>
+      </nav>
+
+      <header class="tool-head">
+        <div>
+          <span class="eyebrow">PDF merger</span>
+          <h1>Merge PDFs without handing them to a server</h1>
+          <p>Add documents, arrange the order, and combine them into one PDF. Pages are copied rather than turned into pictures, so text stays selectable and vector content stays sharp.</p>
+        </div>
+        <span class="privacy-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          No upload · No account
+        </span>
+      </header>
+
+      <div class="tool-grid">
+        <div class="tool-main">
+          <section class="tool-panel" aria-labelledby="drop-h">
+            <div class="tool-drop" id="dropzone">
+              <div class="drop-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg>
+              </div>
+              <h2 id="drop-h">Drop PDFs here, or choose them</h2>
+              <p>Each file keeps its original page content, dimensions and order. Drag to rearrange before merging.</p>
+              <div class="drop-actions">
+                <button class="btn btn-primary" type="button" id="btnPick">Choose PDFs</button>
+                <input type="file" id="fileInput" class="sr-only" tabindex="-1" aria-hidden="true" />
+              </div>
+              <p class="drop-foot">Up to 40 PDFs · 300 MB per batch · page counts read locally</p>
+            </div>
+          </section>
+
+          <section class="tool-panel tool-steps" id="emptyHelp" aria-labelledby="steps-h">
+            <div class="tool-panel-body">
+              <h2 id="steps-h">How it works</h2>
+              <ol>
+                <li><span class="step-n" aria-hidden="true">1</span><div><strong>Choose PDFs</strong><p>Page counts are read in a local worker. Encrypted or damaged files are flagged before merging.</p></div></li>
+                <li><span class="step-n" aria-hidden="true">2</span><div><strong>Set the order</strong><p>Drag a file or use the arrows. Remove anything you do not want in the final document.</p></div></li>
+                <li><span class="step-n" aria-hidden="true">3</span><div><strong>Merge and download</strong><p>Pages are copied rather than rasterized, so text and vectors stay sharp.</p></div></li>
+              </ol>
+            </div>
+          </section>
+
+          <div class="notice" id="mergeNotice" hidden role="status"></div>
+
+          <section class="tool-panel" id="queuePanel" hidden aria-labelledby="queue-h">
+            <div class="tool-panel-head">
+              <h2 id="queue-h">Merge queue <span class="badge" id="queueCount">0</span> <span class="badge" id="pageTotal">0 pages</span></h2>
+              <button class="btn btn-ghost btn-sm" type="button" id="btnClear">Clear all</button>
+            </div>
+            <div class="summary-bar" id="mergeSummary" aria-live="polite"></div>
+            <div class="queue" id="queue" aria-live="polite"></div>
+
+            <div class="settings-grid" id="settingsGrid">
+              <div class="setting-group">
+                <h3>Output</h3>
+                <div class="setting">
+                  <label for="mergedName">PDF file name</label>
+                  <input type="text" id="mergedName" value="auraflow-merged" maxlength="80" autocomplete="off" spellcheck="false" />
+                  <span class="hint">The .pdf extension is added automatically.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="tool-actions">
+              <button class="btn btn-primary" type="button" id="btnMerge" disabled>Merge PDFs</button>
+              <button class="btn btn-danger btn-sm" type="button" id="btnCancel" hidden>Cancel</button>
+              <span class="grow"></span>
+              <span class="text-sm text-muted" id="statusLine" aria-live="polite">The queue order is the final page order.</span>
+            </div>
+
+            <div class="tool-progress" id="progressPanel" hidden>
+              <div class="progress-meta">
+                <strong id="progressLabel">Working…</strong>
+                <span id="progressDetail">0%</span>
+              </div>
+              <div class="progress" role="progressbar" aria-label="PDF merge progress"><div class="progress-bar" id="progressBar"></div></div>
+            </div>
+          </section>
+
+          <section class="tool-panel" id="resultsPanel" hidden aria-labelledby="results-h">
+            <div class="tool-panel-head">
+              <h2 id="results-h">Merged PDF</h2>
+              <span class="badge badge-ok">Built locally</span>
+            </div>
+            <div class="tool-panel-body">
+              <p class="text-muted" id="resultMeta"></p>
+              <div class="tool-actions" style="border-top:0; padding:0">
+                <button class="btn btn-primary" type="button" id="btnDownload">
+                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+                  Download merged PDF
+                </button>
+                <button class="btn btn-ghost" type="button" id="btnStartOver">Start over</button>
+              </div>
+              <p class="text-xs text-faint" style="margin-top:var(--s-3); margin-bottom:0">Document outlines, forms, embedded files and some annotations may not survive merging. The page content itself is not rasterized.</p>
+            </div>
+          </section>
+        </div>
+
+        <aside class="tool-aside" aria-label="Privacy and PDF information">
+          <div class="card">
+            <div class="aside-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.4-3.4 8-8 9-4.6-1-8-4.6-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+            <h2>Documents stay on your device</h2>
+            <ul>
+              <li>PDFs are read with the File API in this tab.</li>
+              <li>Page counts and page copying run in a local Web Worker with pdf-lib.</li>
+              <li>No uploads, accounts, tracking or document history.</li>
+              <li>Closing the tab discards the merge queue.</li>
+              <li>The downloaded file is yours to keep or delete.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>What is preserved</h2>
+            <ul>
+              <li>Page order, page sizes and orientation.</li>
+              <li>Selectable text, fonts and vector artwork.</li>
+              <li>Original page content rather than a screenshot.</li>
+            </ul>
+            <p class="fineprint">Not guaranteed by the local library: PDF outlines/bookmarks, AcroForm fields, embedded files and rare annotation types.</p>
+          </div>
+
+          <div class="card">
+            <h3>Encrypted PDFs</h3>
+            <p>A password-protected PDF is rejected with a clear message. Unlock it in your PDF reader, export an unprotected copy, then add it here. AuraFlow does not ask for or transmit passwords.</p>
+            <p class="fineprint">Need images instead? <a href="./image-to-pdf.html">Open Image → PDF</a>. Converting other formats? <a href="./converter.html">Open the converter</a>.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="/src/pages/pdf-merger.ts"></script>
+</body>
+</html>

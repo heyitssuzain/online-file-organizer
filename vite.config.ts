@@ -48,20 +48,23 @@ function seoFiles() {
 
       const pages: Array<[string, string, string, string]> = [
         // path, changefreq, priority, last meaningful content update
-        ['', 'weekly', '1.0', '2026-10-20'],
-        ['organizer.html', 'weekly', '0.9', '2026-10-20'],
-        ['features.html', 'monthly', '0.7', '2026-10-20'],
-        ['guide.html', 'monthly', '0.7', '2026-10-20'],
-        ['guides/', 'weekly', '0.8', '2026-10-20'],
+        ['', 'weekly', '1.0', '2026-10-21'],
+        ['organizer.html', 'weekly', '0.9', '2026-10-21'],
+        ['converter.html', 'weekly', '0.9', '2026-10-21'],
+        ['image-to-pdf.html', 'weekly', '0.9', '2026-10-21'],
+        ['pdf-merger.html', 'weekly', '0.9', '2026-10-21'],
+        ['features.html', 'monthly', '0.7', '2026-10-21'],
+        ['guide.html', 'monthly', '0.7', '2026-10-21'],
+        ['guides/', 'weekly', '0.8', '2026-10-21'],
         ['guides/how-to-organize-files-by-type.html', 'monthly', '0.6', '2026-10-20'],
         ['guides/how-to-clean-up-downloads-folder.html', 'monthly', '0.6', '2026-10-20'],
         ['guides/how-to-organize-photos-and-documents.html', 'monthly', '0.6', '2026-10-20'],
         ['guides/how-to-identify-duplicate-files.html', 'monthly', '0.6', '2026-10-20'],
-        ['guides/browser-file-organization-limits.html', 'monthly', '0.6', '2026-10-20'],
-        ['about.html', 'monthly', '0.5', '2026-10-20'],
-        ['privacy.html', 'monthly', '0.5', '2026-10-20'],
+        ['guides/browser-file-organization-limits.html', 'monthly', '0.6', '2026-10-21'],
+        ['about.html', 'monthly', '0.5', '2026-10-21'],
+        ['privacy.html', 'monthly', '0.5', '2026-10-21'],
         ['contact.html', 'monthly', '0.4', '2026-10-20'],
-        ['terms.html', 'monthly', '0.4', '2026-10-20'],
+        ['terms.html', 'monthly', '0.4', '2026-10-21'],
       ];
       const base = CANONICAL_BASE;
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -87,6 +90,9 @@ ${pages
 const pages = [
   'index.html',
   'organizer.html',
+  'converter.html',
+  'image-to-pdf.html',
+  'pdf-merger.html',
   'features.html',
   'privacy.html',
   'contact.html',
@@ -113,5 +119,8 @@ export default defineConfig({
     target: 'es2022',
     cssCodeSplit: true,
     assetsInlineLimit: 2048,
+  },
+  worker: {
+    format: 'es',
   },
 });
