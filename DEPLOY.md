@@ -50,11 +50,18 @@ curl.exe -sI https://<your-domain>/ | findstr /i "content-security-policy x-cont
 curl.exe -s -o NUL -w "%{http_code}" https://<your-domain>/no-such-page.html
 # 4. sitemap uses the final domain
 curl.exe -s https://<your-domain>/sitemap.xml | findstr /i "loc" | Select-Object -First 4
+# 5. toolkit pages exist
+curl.exe -s -o NUL -w "%{http_code} converter`n" https://<your-domain>/converter.html
+curl.exe -s -o NUL -w "%{http_code} image-to-pdf`n" https://<your-domain>/image-to-pdf.html
+curl.exe -s -o NUL -w "%{http_code} pdf-merger`n" https://<your-domain>/pdf-merger.html
 ```
 
 Then in a real browser: run one organizer flow end-to-end (pick files → plan →
-download manifest), confirm no console errors, and check that the site renders
-on a phone (375 px) without horizontal scroll.
+download manifest), convert one image and one text file, merge two PDFs, and make
+a two-image PDF. Confirm the Web Worker appears in DevTools → Sources, the Network
+tab shows no external request carrying file data, and no console errors appear.
+Check the homepage and all three toolkit pages on a phone (375 px) without
+horizontal scroll.
 
 ## Known, documented limitations (non-blocking)
 
